@@ -1,0 +1,57 @@
+spring:
+  datasource:
+#    url: jdbc:mysql://127.0.0.1:3306/test
+    url: jdbc:mysql://projectone.cp8yarzvmivv.us-east-1.rds.amazonaws.com:3306/projectone
+    username: Administrator
+    password: Password123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    use-sql-comments: true
+    format-sql: true
+    hibernate:
+      ddl-auto: update
+      dialect : org.hibernate.dialect.MySQL8Dialect
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+  mvc:
+    path-match:
+      matching-strategy: ANT_PATH_MATCHER
+  application:
+    name: backend-service
+
+
+
+#  eureka:
+#    client:
+#      service-url:
+#        defaultZone: http://host.docker.internal:8761/eureka
+#      register-with-eureka: true
+#      fetch-registry: true
+#
+#    instance:
+#      hostname: host.docker.internal
+server:
+  port: 9191
+
+
+#logs
+
+
+logging:
+  file:
+    name: backend-service/logs/application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    web: error
+    root: info
+    sql: error
+    org.springframework.security: trace
+#  config: classpath:logback-spring.xml
+
+
+
+
+

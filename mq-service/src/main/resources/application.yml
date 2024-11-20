@@ -1,0 +1,23 @@
+#spring:
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#    listener:
+#      simple:
+#        retry:
+#          enabled: true
+#          initial-interval: 10s
+#          max-attempts: 6
+#          max-interval: 100s
+#          multiplier: 2
+#rabbitmq:
+#  queue:
+#    name: demo_queue1
+#  exchange:
+#    name: demo_exchange1
+#  routing-key: demo_routing_key
+#
+#server:
+#  port: 8081
