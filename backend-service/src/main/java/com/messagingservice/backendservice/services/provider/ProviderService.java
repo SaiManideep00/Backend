@@ -66,6 +66,7 @@ public class ProviderService {
         ResponseEntity<Object> responseEntity = Util.prepareResponse(providerDTO, HttpStatus.CREATED);
         log.info("Successfully saved producer info: "+ responseEntity.getBody());
         return responseEntity;
+
     }
 
     public List<Producer> saveProducers(List<Producer> producers){
@@ -90,6 +91,7 @@ public class ProviderService {
         else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                 + " does not exist", HttpStatus.NOT_FOUND);
         //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id));
+        log.info("See this", responseEntity.getBody());
         return responseEntity;
     }
 

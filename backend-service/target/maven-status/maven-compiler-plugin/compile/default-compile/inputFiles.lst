@@ -32,6 +32,7 @@
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/model/consumer/AlertSubscription.java
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/repository/provider/ConnectionsRepository.java
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/dto/consumer/AlertSubscriptionDTO.java
+/Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/config/LoggingFilter.java
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/repository/consumer/RecepientGroupRepository.java
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/mapper/ProviderMapper.java
 /Users/gautamjaganatha/Desktop/Java/ProjectOne/backend-service/src/main/java/com/messagingservice/backendservice/model/consumer/RecepientGroup.java

@@ -6,8 +6,10 @@ import com.messagingservice.backendservice.model.provider.Connections;
 import com.messagingservice.backendservice.model.provider.Events;
 import com.messagingservice.backendservice.model.provider.Producer;
 import com.messagingservice.backendservice.services.provider.ProviderService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/")
 //@CrossOrigin(origins = "http://prodeucerconsumerfrontend.s3-website-us-east-1.amazonaws.com/")
 @CrossOrigin("*")
+@Slf4j
 public class ProviderController {
     private final ProviderService providerService;
 
@@ -37,11 +40,23 @@ public class ProviderController {
 
     @GetMapping("get/providers")
     public ResponseEntity<Object> getProviders(){
-        return providerService.getProducers();
+        log.info("Input Payload: {}");
+//        return providerService.getProducers();
+        ResponseEntity<Object> responseEntity = providerService.getProducers();
+        log.info("Output Payload: {}", responseEntity);
+        return responseEntity;
+
     }
 
     @GetMapping("get/provider/{id}")
     public ResponseEntity<Object> getProviderById(@PathVariable Long id){
+        System.out.println(id);
+        log.info("Input Payload : {}",id);
+
+        ResponseEntity<Object> responseEntity = providerService.getProducerById(id);
+
+
+        log.info("Output Payload: {}", responseEntity.getBody());
         return providerService.getProducerById(id);
     }
 

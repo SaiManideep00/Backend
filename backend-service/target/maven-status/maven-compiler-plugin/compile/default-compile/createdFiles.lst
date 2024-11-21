@@ -42,6 +42,7 @@ com/messagingservice/backendservice/mapper/ProviderMapperImpl.class
 com/messagingservice/backendservice/controller/consumer/ConsumerController.class
 com/messagingservice/backendservice/model/provider/Producer.class
 com/messagingservice/backendservice/repository/provider/ConnectionsRepository.class
+com/messagingservice/backendservice/config/LoggingFilter.class
 com/messagingservice/backendservice/dto/consumer/SubscribedEventsGroup.class
 com/messagingservice/backendservice/util/FileUtil.class
 com/messagingservice/backendservice/repository/consumer/AlertCriteriaRepository.class

@@ -49,9 +49,15 @@ logging:
     root: info
     sql: error
     org.springframework.security: trace
+    com.messagingservice.backendservice.config.LoggingFilter: info
 #  config: classpath:logback-spring.xml
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, beans
 
 
 

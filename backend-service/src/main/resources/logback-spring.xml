@@ -1,7 +1,12 @@
 <configuration>
     <!-- Console Appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"application":"backend-service"}</customFields>
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>httpMethod</includeMdcKeyName>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+        </encoder>
     </appender>
 
     <!-- File Appender -->
@@ -11,7 +16,12 @@
             <fileNamePattern>backend-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"application":"backend-service"}</customFields>
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>httpMethod</includeMdcKeyName>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+        </encoder>
     </appender>
 
     <!-- Root Logger -->
