@@ -57,7 +57,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics, beans
+        include:
+          - "*"
+    health:
+      show-details: always
+
 
 
 
