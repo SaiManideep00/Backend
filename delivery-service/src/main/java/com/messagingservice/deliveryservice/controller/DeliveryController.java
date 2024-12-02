@@ -1,5 +1,6 @@
 package com.messagingservice.deliveryservice.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.messagingservice.deliveryservice.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/api/")
 @RequiredArgsConstructor
+@XRayEnabled
 public class DeliveryController {
 
     private final DeliveryService deliveryService;

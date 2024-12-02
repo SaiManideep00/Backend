@@ -1,5 +1,6 @@
 package com.messagingservice.backendservice.config;
 
+
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,4 +13,7 @@ public class WebClientConfig {
     public WebClient.Builder webClientBuilder(){
         return WebClient.builder();
     }
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.messagingservice.backendservice.controller.consumer;
 
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.messagingservice.backendservice.dto.consumer.AlertSubscriptionDTO;
 import com.messagingservice.backendservice.dto.consumer.SubscriptionFinderDTO;
 import com.messagingservice.backendservice.dto.consumer.SubscribedEventsGroup;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/")
 //@CrossOrigin(origins = "http://prodeucerconsumerfrontend.s3-website-us-east-1.amazonaws.com/")
 @CrossOrigin("*")
+@XRayEnabled
 public class ConsumerController {
 
     private final ConsumerService consumerService;

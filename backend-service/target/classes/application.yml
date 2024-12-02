@@ -64,11 +64,15 @@ management:
   endpoints:
     web:
       exposure:
+<<<<<<< HEAD
         include: '*'
     health:
       show-details: always
 
 
+=======
+        include: health, metrics, beans
+>>>>>>> 53e544b8747c545285f68e18b515625a48ddbaee
 
 
 

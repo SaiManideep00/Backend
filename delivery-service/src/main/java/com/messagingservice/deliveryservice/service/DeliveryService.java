@@ -1,5 +1,6 @@
 package com.messagingservice.deliveryservice.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class DeliveryService {
     private final WebClient.Builder webClientBuilder;
     private final Gson gson;
