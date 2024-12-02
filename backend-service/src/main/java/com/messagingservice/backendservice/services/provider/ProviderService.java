@@ -1,5 +1,6 @@
 package com.messagingservice.backendservice.services.provider;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
 import com.messagingservice.backendservice.dto.provider.EventGroup;
@@ -39,6 +40,7 @@ import java.util.*;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class ProviderService {
 
     private final ProducerRepository producerRepository;
@@ -294,6 +296,7 @@ public class ProviderService {
 
     public void createExchange(String exchangeName){
         String baseUrl = "http://mq-service:9193/api/provider/create/exchange";
+
         try {
             // Build the URL with query parameters
             URIBuilder uriBuilder = new URIBuilder(baseUrl);

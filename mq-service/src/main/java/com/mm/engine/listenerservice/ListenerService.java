@@ -1,5 +1,6 @@
 package com.mm.engine.listenerservice;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 
 @Service
 @RequiredArgsConstructor
+@XRayEnabled
 public class ListenerService {
     private final WebClient.Builder webClientBuilder;
     public void suspendConsumer(String queueName, String exchangeName) throws Exception {

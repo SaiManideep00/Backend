@@ -1,5 +1,6 @@
 package com.messagingservice.backendservice.controller.provider;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.messagingservice.backendservice.dto.provider.EventGroup;
 import com.messagingservice.backendservice.dto.provider.EventsDTO;
 import com.messagingservice.backendservice.model.provider.Connections;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 //@CrossOrigin(origins = "http://prodeucerconsumerfrontend.s3-website-us-east-1.amazonaws.com/")
 @CrossOrigin("*")
 @Slf4j
+@XRayEnabled
 public class ProviderController {
     private final ProviderService providerService;
 
