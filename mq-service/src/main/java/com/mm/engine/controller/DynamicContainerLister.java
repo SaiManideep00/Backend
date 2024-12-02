@@ -1,5 +1,6 @@
 package com.mm.engine.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@XRayEnabled
 public class DynamicContainerLister {
 
     private Map<String, SimpleMessageListenerContainer> dynamicContainers = new HashMap<>();

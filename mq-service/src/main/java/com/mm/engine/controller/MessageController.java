@@ -1,5 +1,6 @@
 package com.mm.engine.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
+@XRayEnabled
 public class MessageController {
     private final RabbitTemplate rabbitTemplate;
     private final AmqpAdmin amqpAdmin;

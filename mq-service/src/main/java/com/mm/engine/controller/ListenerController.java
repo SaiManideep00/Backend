@@ -1,5 +1,6 @@
 package com.mm.engine.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.mm.engine.dto.ConsumerRequest;
 import com.mm.engine.listener.CustomMessageListener;
 import com.mm.engine.listenerservice.ListenerService;
@@ -23,6 +24,7 @@ import java.io.IOException;
 
 @RestController
 @Slf4j
+@XRayEnabled
 public class ListenerController {
 
     private final ConnectionFactory connectionFactory;

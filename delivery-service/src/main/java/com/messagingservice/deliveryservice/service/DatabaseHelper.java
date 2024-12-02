@@ -1,5 +1,6 @@
 package com.messagingservice.deliveryservice.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@XRayEnabled
 public class DatabaseHelper {
 
     public static boolean searchInDatabase(String columnName, String value, String DB_URL, String DB_USERNAME, String DB_PASSWORD) {

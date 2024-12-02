@@ -1,5 +1,6 @@
 package com.mm.engine.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/provider")
+@XRayEnabled
 public class ProviderController {
     private final ConnectionFactory connectionFactory;
     private final RabbitAdmin rabbitAdmin;

@@ -1,5 +1,6 @@
 package com.messagingservice.backendservice.services.consumer;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.messagingservice.backendservice.dto.consumer.AlertSubscriptionDTO;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@XRayEnabled
 public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final SubscribedEventsRepository subscribedEventsRepository;

@@ -1,5 +1,6 @@
 package com.messagingservice.deliveryservice.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.messagingservice.deliveryservice.service.DeliveryService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/")
+@XRayEnabled
 public class DataFetcher {
     private final DeliveryService deliveryService;
 
