@@ -6,6 +6,7 @@ import com.messagingservice.backendservice.model.provider.Connections;
 import com.messagingservice.backendservice.model.provider.Events;
 import com.messagingservice.backendservice.model.provider.Producer;
 import com.messagingservice.backendservice.services.provider.ProviderService;
+import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class ProviderController {
 
     }
 
+    @Observed(name = "get.providers")
     @GetMapping("get/provider/{id}")
     public ResponseEntity<Object> getProviderById(@PathVariable Long id){
         System.out.println(id);

@@ -53,11 +53,22 @@ logging:
 #  config: classpath:logback-spring.xml
 
 
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: *
+
+
 management:
   endpoints:
     web:
       exposure:
-        include: health, metrics, beans
+        include: '*'
+    health:
+      show-details: always
+
+
 
 
 

@@ -90,8 +90,7 @@ public class ProviderService {
         }
         else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                 + " does not exist", HttpStatus.NOT_FOUND);
-        //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id));
-        log.info("See this", responseEntity.getBody());
+        //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id))
         return responseEntity;
     }
 
