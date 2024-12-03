@@ -53,26 +53,23 @@ logging:
 #  config: classpath:logback-spring.xml
 
 
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: *
+
 
 
 management:
   endpoints:
     web:
       exposure:
-<<<<<<< HEAD
-        include: '*'
+        include: health, metrics, prometheus, error, logfile, loggers
     health:
       show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 
-=======
-        include: health, metrics, beans
->>>>>>> 53e544b8747c545285f68e18b515625a48ddbaee
+
 
 
 

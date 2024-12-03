@@ -64,7 +64,7 @@ public class ProviderService {
 
     public ResponseEntity<Object> saveProducer(Producer producer){
         ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(producerRepository.save(producer));
-        log.info("[ProducerService : saveProducer(Post)] Saving Producer info: "+producer);
+        log.info("Saving Producer info: "+producer);
         ResponseEntity<Object> responseEntity = Util.prepareResponse(providerDTO, HttpStatus.CREATED);
         log.info("Successfully saved producer info: "+ responseEntity.getBody());
         return responseEntity;
