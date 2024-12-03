@@ -1,4 +1,4 @@
-package com.messagingservice.backendservice.config;
+package com.messagingservice.deliveryservice.config;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;

@@ -2,10 +2,10 @@
     <!-- Console Appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"application":"backend-service"}</customFields>
-            <includeMdcKeyName>requestId</includeMdcKeyName>
-            <includeMdcKeyName>httpMethod</includeMdcKeyName>
-            <includeMdcKeyName>uri</includeMdcKeyName>
+            <customFields>{"service":"backend-service"}</customFields>
+<!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
+            <includeMdcKeyName>method</includeMdcKeyName>
+            <includeMdcKeyName>path</includeMdcKeyName>
         </encoder>
     </appender>
 
@@ -17,10 +17,10 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"application":"backend-service"}</customFields>
-            <includeMdcKeyName>requestId</includeMdcKeyName>
-            <includeMdcKeyName>httpMethod</includeMdcKeyName>
-            <includeMdcKeyName>uri</includeMdcKeyName>
+            <customFields>{"service":"backend-service"}</customFields>
+<!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
+            <includeMdcKeyName>method</includeMdcKeyName>
+            <includeMdcKeyName>path</includeMdcKeyName>
         </encoder>
     </appender>
 

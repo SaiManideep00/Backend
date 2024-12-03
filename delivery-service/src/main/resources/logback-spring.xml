@@ -1,7 +1,12 @@
 <configuration>
     <!-- Console Appender: Outputs JSON logs to the console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"delivery-service"}</customFields>
+            <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
+            <includeMdcKeyName>method</includeMdcKeyName>
+            <includeMdcKeyName>path</includeMdcKeyName>
+        </encoder>
     </appender>
 
     <!-- File Appender: Writes JSON logs to a file -->
@@ -11,7 +16,12 @@
             <fileNamePattern>delivery-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"delivery-service"}</customFields>
+            <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
+            <includeMdcKeyName>method</includeMdcKeyName>
+            <includeMdcKeyName>path</includeMdcKeyName>
+        </encoder>
     </appender>
 
     <!-- Root Logger: Send logs to both console and file -->

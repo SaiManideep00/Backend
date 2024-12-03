@@ -1,4 +1,5 @@
-package com.messagingservice.backendservice.config;
+package com.mm.engine.config;
+
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,3 +45,4 @@ public class LoggingFilter implements Filter {
         }
     }
 }
+
