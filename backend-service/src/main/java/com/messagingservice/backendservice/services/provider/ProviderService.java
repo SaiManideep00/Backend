@@ -80,6 +80,7 @@ public class ProviderService {
         producerRepository.findAll().forEach(producers::add);
         List<ProviderBasicDetailsDTO> providerList = providerMapper.toProviderBasicDetailsDTO(producers);
         ResponseEntity<Object> responseEntity = Util.prepareResponse(providerList, HttpStatus.OK);
+        log.info("List of all Producers : {}",responseEntity.getBody());
         return responseEntity;
     }
 
@@ -89,9 +90,13 @@ public class ProviderService {
         if(producer.isPresent()) {
             ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(producer.get());
             responseEntity = Util.prepareResponse(providerDTO, HttpStatus.OK);
+            log.info("Provider with id : {}",id,responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            log.error("");
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+        }
         //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id))
         return responseEntity;
     }
@@ -294,7 +299,7 @@ public class ProviderService {
     }
 
     public void createExchange(String exchangeName){
-        String baseUrl = "http://mq-service:9193/api/provider/create/exchange";
+        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/api/provider/create/exchange";
 
         try {
             // Build the URL with query parameters
@@ -570,12 +575,17 @@ public class ProviderService {
         ResponseEntity<Object> responseEntity;
         Optional<Producer> producer = producerRepository.findById(id);
         if(producer.isPresent()){
+            log.info("Trying to delete");
             //kafkaTopicConfig.deleteTopic(producer.get().getKafkaTopicName());
             producerRepository.deleteById(id);
             responseEntity = Util.prepareResponse("Producer with id " + id + " deleted successfully.", HttpStatus.OK);
+            log.info("deleted Successfully",responseEntity);
+            System.out.println(responseEntity);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+        }
         return responseEntity;
     }
 

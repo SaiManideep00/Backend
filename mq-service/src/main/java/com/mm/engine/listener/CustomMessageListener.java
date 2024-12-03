@@ -70,7 +70,7 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
     }
 
     public void processMessage(String content, String queueName, String providerName) throws Exception {
-        String baseUrl = "http://delivery-service:9192/api/deliver";
+        String baseUrl = "http://sgforALBDeliveryService-160879920.us-east-2.elb.amazonaws.com/api/deliver";
         //WebClient webClient = WebClient.builder().build();
         ResponseEntity<String> response;
         try {

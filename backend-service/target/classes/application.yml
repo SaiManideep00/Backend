@@ -39,17 +39,17 @@ server:
 #logs
 
 
-logging:
-  file:
-    name: backend-service/logs/application.log
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-  level:
-    web: error
-    root: info
-    sql: error
-    org.springframework.security: trace
-    com.messagingservice.backendservice.config.LoggingFilter: info
+#logging:
+#  file:
+#    name: backend-service/logs/application.log
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg traceId=%X{traceId} spanId=%X{spanId}%n "
+#  level:
+#    web: error
+#    root: info
+#    sql: error
+#    org.springframework.security: trace
+#    com.messagingservice.backendservice.config.LoggingFilter: info
 #  config: classpath:logback-spring.xml
 
 

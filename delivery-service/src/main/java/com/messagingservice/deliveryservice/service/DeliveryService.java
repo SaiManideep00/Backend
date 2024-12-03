@@ -108,7 +108,7 @@ public class DeliveryService {
         return true;
     }
     public ResponseEntity<String> identifyDeliveryMethodAndDeliver(String providerName, String eventName, String consumerName, Object obj) {
-        String baseUrl = "http://backend-service:9191/api/get/subscribed_event";
+        String baseUrl = "http://BackendServiceALB-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_event";
         ResponseEntity<SubscribedEvent> response;
         try {
             // Build the URL with query parameters
@@ -156,7 +156,7 @@ public class DeliveryService {
     }
 
     public ResponseEntity<String> notify(String providerName, String eventName, String consumerName, Object obj) {
-        String baseUrl = "http://backend-service:9191/api/get/subscribed_alert";
+        String baseUrl = "http://BackendServiceALB-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_alert";
         ResponseEntity<AlertSubscription> response;
         try {
             // Build the URL with query parameters
@@ -216,7 +216,7 @@ public class DeliveryService {
     }
 
     public ResponseEntity<String> publishDataToMQ(String providerName, String eventName, Object data){
-        String baseUrl = "http://mq-service:9193/api/v1/publish";
+        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/api/v1/publish";
         ResponseEntity<String> response;
         String jsonBody = gson.toJson(data);
         try {

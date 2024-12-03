@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 public class ListenerService {
     private final WebClient.Builder webClientBuilder;
     public void suspendConsumer(String queueName, String exchangeName) throws Exception {
-        String baseUrl = "http://backend-service:9191/api/suspend/subscription";
+        String baseUrl = "http://BackendServiceALB-788612567.us-east-2.elb.amazonaws.com/api/suspend/subscription";
         ResponseEntity<Object> response;
         try {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
