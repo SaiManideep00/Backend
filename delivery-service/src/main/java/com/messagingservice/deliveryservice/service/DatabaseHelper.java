@@ -1,6 +1,7 @@
 package com.messagingservice.deliveryservice.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @XRayEnabled
+@Slf4j
 public class DatabaseHelper {
 
     public static boolean searchInDatabase(String columnName, String value, String DB_URL, String DB_USERNAME, String DB_PASSWORD) {
@@ -36,6 +38,7 @@ public class DatabaseHelper {
             return rowCount > 0; // Return true if at least one matching row is found
 
         } catch (SQLException e) {
+            log.error("SQL Exception");
             // Handle any potential database errors here
             e.printStackTrace();
         } finally {
@@ -44,6 +47,7 @@ public class DatabaseHelper {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
+                    log.error("SQL Exception");
                     e.printStackTrace();
                 }
             }
@@ -51,13 +55,15 @@ public class DatabaseHelper {
                 try {
                     statement.close();
                 } catch (SQLException e) {
+                    log.error("SQL Exception");
                     e.printStackTrace();
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch (SQLException e) {log.error("SQL Exception");
+
                     e.printStackTrace();
                 }
             }
