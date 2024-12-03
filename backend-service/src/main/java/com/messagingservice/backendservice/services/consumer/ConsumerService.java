@@ -15,6 +15,7 @@ import com.messagingservice.backendservice.repository.provider.ConnectionsReposi
 import com.messagingservice.backendservice.repository.provider.EventsRepository;
 import com.messagingservice.backendservice.util.Util;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 @XRayEnabled
+@Slf4j
 public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final SubscribedEventsRepository subscribedEventsRepository;
@@ -54,6 +56,7 @@ public class ConsumerService {
         ConsumerBasicDetailsDTO consumerDTO = consumerMapper.toConsumerBasicDetailsDTO(consumerRepository.save(consumer));
         //createConsumerQueue(consumer.getConsumerName());
         ResponseEntity<Object> responseEntity = Util.prepareResponse(consumerDTO, HttpStatus.CREATED);
+        log.info("Saved consumer "+consumer+" to the database");
         return responseEntity;
     }
 
@@ -78,9 +81,11 @@ public class ConsumerService {
                     .block();
 
             System.out.println(str);
+            log.info("Created consumer queue with name "+str);
             // Process the response as needed
 //            int statusCode = response.statusCode();
         } catch (URISyntaxException e) {
+            log.error("Cannot create consumer queue");
             throw new RuntimeException(e);
         }
     }
@@ -89,6 +94,7 @@ public class ConsumerService {
         List<Consumer> consumers = new ArrayList<>();
         consumerRepository.findAll().forEach(consumers::add);
         List<ConsumerBasicDetailsDTO> consumerList = consumerMapper.toConsumerBasicDetailsDTO(consumers);
+        log.info("Fetched consumers  "+consumerList);
         ResponseEntity<Object> responseEntity = Util.prepareResponse(consumerList, HttpStatus.CREATED);
         return responseEntity;
 
@@ -100,9 +106,11 @@ public class ConsumerService {
         Optional<Consumer> consumer = consumerRepository.findById(id);
         if(consumer.isPresent()){
             ConsumerBasicDetailsDTO consumerDTO = consumerMapper.toConsumerBasicDetailsDTO(consumer.get());
+            log.info("Fetched consumer with id "+id+consumerDTO);
             responseEntity = Util.prepareResponse(consumerDTO, HttpStatus.OK);
         }
         else {
+            log.error("Cannot find consumer with id "+id);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ id
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -115,9 +123,11 @@ public class ConsumerService {
         Optional<Consumer> consumer = consumerRepository.findById(id);
         if(consumer.isPresent()) {
             subscribedEvents = consumer.get().getSubscribedEvents();
+            log.info("Fetched events of the consumer with id "+id+subscribedEvents);
             responseEntity = Util.prepareResponse(subscribedEvents, HttpStatus.OK);
         }
         else{
+            log.error("Cannot find consumer with id "+id);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ id
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -131,8 +141,10 @@ public class ConsumerService {
         if(consumer.isPresent()) {
             alertSubscriptions = consumer.get().getAlertSubscriptions();
             responseEntity = Util.prepareResponse(alertSubscriptions, HttpStatus.OK);
+            log.info("Fetched alerts of the consumer with id "+consumerId+ alertSubscriptions);
         }
         else{
+            log.error("Cannot find consumer with id "+consumerId);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ consumerId
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -142,9 +154,11 @@ public class ConsumerService {
     public ResponseEntity<Object> getSubscribedEventById(long id){
         ResponseEntity<Object> responseEntity;
         Optional<SubscribedEvents> subscribedEvent = subscribedEventsRepository.findById(id);
-        if(subscribedEvent.isPresent())
+        if(subscribedEvent.isPresent()){
             responseEntity = Util.prepareResponse(subscribedEvent.get(), HttpStatus.OK);
+            log.info("Fetched subscribed event with id "+id+subscribedEvent);}
         else{
+            log.error("Cannot find subscribed event with Id "+ id);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested subscribed event with Id "+ id
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -157,6 +171,7 @@ public class ConsumerService {
         Optional<SubscribedEventConnections> connections;
 //        alertNotificationsCriteriaRepository.save(subscribedEvents.getAlertNotificationsCriteria());
         if(!eventsRepository.findById(subscribedEvents.getEventId()).isPresent()){
+            log.error("Cannot find the event with id "+subscribedEvents.getEventId());
             responseEntity = Util.prepareErrorResponse("404", "Sorry the event with Id "+ subscribedEvents.getEventId()
                     +" does not exist", HttpStatus.NOT_FOUND);
             return responseEntity;
@@ -170,6 +185,7 @@ public class ConsumerService {
                     subscribedEvents.setEventName(eventsRepository.findById(subscribedEvents.getEventId()).get().getEventName());
                 }
                 else{
+                    log.error("Cannot find connection with Id "+ id);
                     responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with Id "+ id
                             +" does not exist", HttpStatus.NOT_FOUND);
                     return responseEntity;
@@ -193,8 +209,10 @@ public class ConsumerService {
                     .append(eventsRepository.findById(subscribedEvents.getEventId()).get().getEventName()).toString();
             subscribeToExchange(consumer.get().getConsumerName()+".event."+eventsRepository.findById(subscribedEvents.getEventId()).get().getEventName(), exchangeName);
             responseEntity = Util.prepareResponse(consumerRepository.save(consumer.get()).getSubscribedEvents(), HttpStatus.OK);
+            log.info("Fetched subscribed events with id "+id);
         }
         else{
+            log.error("Cannot find consumer with id "+id);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ id
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -221,8 +239,10 @@ public class ConsumerService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            log.info("Subscribed to Exchange "+str);
             System.out.println(str);
         } catch (URISyntaxException e) {
+            log.error("cannot subscribe to exchange");
             throw new RuntimeException(e);
         }
     }
@@ -237,9 +257,11 @@ public class ConsumerService {
             subscribedEventsRepository.deleteById(subscriptionId);
             //un comment below line later
             unSubscribeToExchange(consumer.get().getConsumerName()+".event."+subscribedEvent.get().getEventName(), subscribedEvent.get().getProviderName()+"."+subscribedEvent.get().getEventName());
+            log.info("Unsubscribed to event with id "+subscriptionId);
             responseEntity = Util.prepareResponse(subscribedEvent, HttpStatus.OK);
         }
         else{
+            log.error("Cannot find the requested event with Id "+ subscriptionId);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id "+ subscriptionId
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -266,8 +288,10 @@ public class ConsumerService {
                     .bodyToMono(String.class)
                     .block();
             System.out.println(response);
+            log.info("Unsubscribed to exchange "+response);
             // Process the response as needed
         } catch (URISyntaxException e) {
+            log.error("Cannot unsubscribe to the exchange");
             throw new RuntimeException(e);
         }
     }
@@ -308,16 +332,19 @@ public class ConsumerService {
                     consumer.get().addEvent(subscribedEvents);
                 }
                 else{
+                    log.error("Cannot find the requested event with Id "+ id);
                     responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id "+ id
                             +" does not exist", HttpStatus.NOT_FOUND);
                     return responseEntity;
                 }
             }
             responseEntity = Util.prepareResponse(consumerRepository.save(consumer.get()).getSubscribedEvents(), HttpStatus.OK);
+            log.info("Subscribed events group for consumer with id "+id+responseEntity.getBody());
         }
         else{
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ id
                     +" does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find the requested consumer with Id "+ id);
         }
         return responseEntity;
     }
@@ -328,9 +355,11 @@ public class ConsumerService {
         Optional<Consumer> consumer = subscribedEventsRepository.findConsumerBySubscriptionId(id);
 
         if(!existingEvent.isPresent()){
+            log.error("Cannot find Subscription with the Id " + id );
             return Util.prepareErrorResponse("404" , "Subscription with the Id " + id + "does mot exist", HttpStatus.NOT_FOUND);
         }
         if(subscribedEvents.getSubscribedEventConnections() == null){
+            log.error("Subscription should have at least one connection");
             return Util.prepareErrorResponse("404" , "Subscription should have at least one connection", HttpStatus.NOT_FOUND);
         }
         if(subscribedEvents.getSubscribedEventConnections().getConnectionId() == null){
@@ -344,26 +373,30 @@ public class ConsumerService {
         else{
             Long connectionId = subscribedEvents.getSubscribedEventConnections().getConnectionId();
             Optional<SubscribedEventConnections> subscribedEventConnections = subscribedEventConnectionsRepository
-                                                                                .findById(connectionId);
+                    .findById(connectionId);
             if(subscribedEventConnections.isPresent()){
                 existingEvent.get().setSubscribedEventConnections(subscribedEventConnections.get());
                 existingEvent.get().setDataFormat(subscribedEvents.getDataFormat());
                 existingEvent.get().setFilters(subscribedEvents.getFilters());
             }
             else {
+                log.error("Cannot find the requested connection with id "+ connectionId);
                 return Util.prepareErrorResponse("404", "Sorry the requested connection with id "+ connectionId
                         +" does not exist", HttpStatus.NOT_FOUND);
             }
         }
+        log.info("updated subscribed event for id "+id);
         return Util.prepareResponse(subscribedEventsRepository.save(existingEvent.get()), HttpStatus.OK);
     }
 
     public String deleteEvent(long id){
         if(subscribedEventsRepository.findById(id) != null) {
             subscribedEventsRepository.deleteById(id);
+            log.info("Event with id "+id+" deleted successfully");
             return "Event with id "+id+" deleted successfully";
         }
         else{
+            log.error("Cannot find the event with id "+id);
             throw new ResourceNotFoundException("Event not found details with id = " + id);
         }
     }
@@ -371,9 +404,11 @@ public class ConsumerService {
     public String deleteConsumerEvent(long id){
         if(subscribedEventsRepository.findById(id) != null) {
             subscribedEventsRepository.deleteById(id);
+            log.info("Event with id "+id+" deleted successfully");
             return "Event with id "+id+" deleted successfully";
         }
-        else{
+        else{log.error("Cannot find the event with id "+id);
+
             throw new ResourceNotFoundException("No Event found with id = " + id);
         }
     }
@@ -387,11 +422,15 @@ public class ConsumerService {
             existingConsumer.get().setAlertNotificationEmailID(consumer.getAlertNotificationEmailID());
             ConsumerBasicDetailsDTO consumerDTO = consumerMapper.toConsumerBasicDetailsDTO(existingConsumer.get());
             responseEntity = Util.prepareResponse(consumerDTO, HttpStatus.OK);
+            log.info("Updated consumer with details ");
             consumerRepository.save(existingConsumer.get());
         }
-        else
+        else{
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with name "+ consumer.getConsumerName()
                     +" does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find requested consumer");
+        }
+
         return responseEntity;
     }
     public ResponseEntity<Object> updateConnection(long connectionId, SubscribedEventConnections connection) {
@@ -403,8 +442,10 @@ public class ConsumerService {
             existingConnection.get().setUsername(connection.getUsername());
             existingConnection.get().setPassword(connection.getPassword());
             responseEntity = Util.prepareResponse(subscribedEventConnectionsRepository.save(existingConnection.get()), HttpStatus.OK);
+            log.info("Updated connection with id "+connectionId);
         }
         else{
+            log.error("cannot find the requested connection with id "+ connectionId);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with id "+ connectionId
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
@@ -417,8 +458,10 @@ public class ConsumerService {
             consumer.get().setActive(true);
             consumerRepository.save(consumer.get());
             responseEntity = Util.prepareResponse(consumer, HttpStatus.OK);
+            log.info("Activated consumer with id "+id);
         }
         else{
+            log.error("Cannot find consumer with id "+id);
             responseEntity = Util.prepareErrorResponse( "400","The consumer with id "+id+" is not present", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -431,9 +474,11 @@ public class ConsumerService {
         if(consumer.isPresent()) {
             consumer.get().setActive(false);
             consumerRepository.save(consumer.get());
+            log.info("Suspended consumer with id "+id);
             responseEntity = Util.prepareResponse(consumer, HttpStatus.OK);
         }
         else{
+            log.error("Cannot find consumer with id "+id);
             responseEntity = Util.prepareErrorResponse( "400","The consumer with id "+id+" is not present", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -446,8 +491,10 @@ public class ConsumerService {
             subscribedEventsRepository.save(subscribedEvent.get());
             listenerController(subscribedEventsRepository.findConsumerBySubscriptionId(id).get().getConsumerName() + ".event." +subscribedEvent.get().getEventName(), "http://mq-service/start/listener");
             responseEntity = Util.prepareResponse(subscribedEvent, HttpStatus.OK);
+            log.info("Activated subscribed event with id "+id);
         }
         else{
+            log.error("Cannot find Subscribed Event with id "+id);
             responseEntity = Util.prepareErrorResponse( "400","The Subscribed Event with id "+id+" is not present", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -469,9 +516,11 @@ public class ConsumerService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            log.info("Created listener "+response);
             System.out.println(response);
             // Process the response as needed
         } catch (URISyntaxException e) {
+            log.error("Cannot create listener");
             throw new RuntimeException(e);
         }
     }
@@ -484,8 +533,10 @@ public class ConsumerService {
             subscribedEventsRepository.save(subscribedEvent.get());
             listenerController(subscribedEventsRepository.findConsumerBySubscriptionId(id).get().getConsumerName() + ".event." +subscribedEvent.get().getEventName(), "http://mq-service/stop/listener");
             responseEntity = Util.prepareResponse(subscribedEvent, HttpStatus.OK);
+            log.info("Suspended subscribed event with id "+id);
         }
         else{
+            log.error("Cannot find  Subscribed Event with id "+id);
             responseEntity = Util.prepareErrorResponse( "400","The Subscribed Event with id "+id+" is not present", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -494,16 +545,21 @@ public class ConsumerService {
     public ResponseEntity<Object> suspendEventSubscription(String eventName, String consumerName, String providerName){
         ResponseEntity<Object> responseEntity;
         Optional<Consumer> consumer = consumerRepository.findByConsumerName(consumerName);
-        if(!consumer.isPresent())
+        if(!consumer.isPresent()){
+            log.error("Cannot find consumer with name "+consumerName);
             return Util.prepareErrorResponse("404", "Consumer with name "+consumerName+" is not found", HttpStatus.NOT_FOUND);
+        }
+
         Optional<SubscribedEvents> subscribedEvent = subscribedEventsRepository.findByConsumerIdAndEventNameAndProviderName(consumer.get().getConsumerId(), eventName, providerName);
         if(subscribedEvent.isPresent()) {
             subscribedEvent.get().setActive(false);
             subscribedEventsRepository.save(subscribedEvent.get());
+            log.info("Suspended Event with name "+eventName);
 //            listenerController(subscribedEventsRepository.findConsumerBySubscriptionId(id).get().getConsumerName() + ".event." +subscribedEvent.get().getEventName(), "http://mq-service/stop/listener");
             responseEntity = Util.prepareResponse(subscribedEvent, HttpStatus.OK);
         }
         else{
+            log.error("Cannot find Subscribed Event with provided details ");
             responseEntity = Util.prepareErrorResponse( "400","The Subscribed Event with provided details is not present", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -513,8 +569,10 @@ public class ConsumerService {
     public String deleteConsumer(long id){
         if(getConsumerById(id)!=null) {
             consumerRepository.deleteById(id);
+            log.info("Consumer with id " + id + " deleted.");
             return "Consumer with id " + id + " deleted.";
         }
+        log.error("No Consumer exits with id "+id);
         return "No Consumer exits with id "+id;
     }
 
@@ -525,9 +583,14 @@ public class ConsumerService {
         if(consumer.isPresent()) {
             subscribedEventConnections = consumer.get().getConnections();
             responseEntity = Util.prepareResponse(subscribedEventConnections, HttpStatus.OK);
+            log.info("Fetched consumer connections with id "+consumerId);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id " + consumerId
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id " + consumerId
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find the consumer with id " + consumerId);
+        }
+
         return responseEntity;
 
     }
@@ -540,10 +603,12 @@ public class ConsumerService {
                 connection.get().setActive(true);
                 subscribedEventConnectionsRepository.save(connection.get());
             }
+            log.info("Activated Connection with id "+connectionId);
             responseEntity = Util.prepareResponse(connection, HttpStatus.OK);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer connection with Id " + connectionId
+        else {responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer connection with Id " + connectionId
                 + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find the requested consumer connection with Id " + connectionId);}
         return responseEntity;
     }
 
@@ -554,11 +619,16 @@ public class ConsumerService {
             if (connection.get().isActive()) {
                 connection.get().setActive(false);
                 subscribedEventConnectionsRepository.save(connection.get());
+                log.info("Suspended connection with id "+connectionId);
             }
             responseEntity = Util.prepareResponse(connection, HttpStatus.OK);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer connection with Id " + connectionId
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else{
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer connection with Id " + connectionId
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find requested consumer connection with Id" + connectionId);
+        }
+
         return responseEntity;
     }
 
@@ -570,8 +640,10 @@ public class ConsumerService {
         if(subscribedEvents.isPresent()){
             SubscribedEventConnections subscribedEventConnections = subscribedEvents.get().getSubscribedEventConnections();
             responseEntity = Util.prepareResponse(subscribedEventConnections, HttpStatus.OK);
+            log.info("Fetched connections of subscribed events "+responseEntity.getBody());
             return responseEntity;
         }
+        log.error("Cannot find the requested event connection");
         return responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event connection"
                 + " does not exist", HttpStatus.NOT_FOUND);
     }
@@ -581,8 +653,10 @@ public class ConsumerService {
         Long consumerId = consumer.get().getConsumerId();
         Optional<SubscribedEvents> subscribedEvents = subscribedEventsRepository.findByConsumerIdAndEventNameAndProviderName(consumerId, eventName, providerName);
         if(subscribedEvents.isPresent()){
+            log.info("Fetched subscribed event for provider "+providerName);
             return Util.prepareResponse(subscribedEvents.get(), HttpStatus.OK);
         }
+        log.error("Cannot find requested subscription");
         return Util.prepareErrorResponse("404", "Sorry the requested subscription"
                 + " does not exist", HttpStatus.NOT_FOUND);
     }
@@ -592,8 +666,10 @@ public class ConsumerService {
         Long consumerId = consumer.get().getConsumerId();
         Optional<AlertSubscription> alertSubscription = alertSubscriptionRepository.findByConsumerIdAndEventNameAndProviderName(consumerId, eventName, providerName);
         if(alertSubscription.isPresent()){
+            log.info("Fetched subscribed alert for "+providerName);
             return Util.prepareResponse(alertSubscription.get(), HttpStatus.OK);
         }
+        log.error("Cannot find the requested subscription");
         return Util.prepareErrorResponse("404", "Sorry the requested subscription"
                 + " does not exist", HttpStatus.NOT_FOUND);
     }
@@ -607,27 +683,36 @@ public class ConsumerService {
         if(!event.isPresent()){
             responseEntity = Util.prepareErrorResponse("404", "Sorry the event with Id "+ alertSubscriptionDTO.getEventId()
                     +" does not exist", HttpStatus.NOT_FOUND);
+            log.error("Cannot find event with Id "+ alertSubscriptionDTO.getEventId());
             return responseEntity;
         }
         if (consumer.isPresent()) {
             if(alertSubscriptionDTO.getAlertCriteria() != null)
                 alertSubscriptionDTO.setEventName(eventsRepository.findById(alertSubscriptionDTO.getEventId()).get().getEventName());//subscribedEventsRepository.save(subscribedEvents);
             else
+            {
+                log.error("Alert Criteria is missing, please try again by adding alert criteria");
                 return Util.prepareErrorResponse("400", "Alert Criteria is missing, please try again by adding alert criteria", HttpStatus.BAD_REQUEST);
 
+            }
+
             if(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup() == null){
+                log.error("Alert Criteria must have a Recipient");
                 return Util.prepareErrorResponse("400", "Alert Criteria must have a Recipient", HttpStatus.BAD_REQUEST);
             }
             if(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId() == null){
                 RecepientGroup recepientGroup = recepientGroupRepository.save(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup());
                 alertSubscriptionDTO.getAlertCriteria().setRecepientGroup(recepientGroup);
+                log.info("Saved alert");
             }
             else{
                 Optional<RecepientGroup> recepientGroup = recepientGroupRepository.findById(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId());
                 if(recepientGroup.isPresent()){
                     alertSubscriptionDTO.getAlertCriteria().setRecepientGroup(recepientGroup.get());
+                    log.info("Get Alert");
                 }
                 else {
+                    log.error("Cannot find Recepient Group with the id "+ alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId());
                     return Util.prepareErrorResponse("400", "Sorry the Recepient Group with the id "+ alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId() +" is not present", HttpStatus.BAD_REQUEST);
                 }
             }
@@ -648,11 +733,16 @@ public class ConsumerService {
 //                    dbWatchlistRepository.save(dbConnection.get());
                 }
                 else
+                {
+                    log.error("Cannot find Connection with Id "+connectionId);
                     return Util.prepareErrorResponse("400", "Connection with Id "+connectionId + " does not exist", HttpStatus.NOT_FOUND);
+                }
+
             }
 
             consumer.get().addAlert(alertSubscription);
             responseEntity = Util.prepareResponse(consumerRepository.save(consumer.get()).getAlertSubscriptions(), HttpStatus.OK);
+            log.info("Saved consumer alert");
             //**** Un comment later *****
             String exchangeName = new StringBuilder().append(alertSubscription.getProviderName())
                     .append(".")
@@ -660,12 +750,14 @@ public class ConsumerService {
             subscribeToExchange(consumer.get().getConsumerName()+".alert."+eventsRepository.findById(alertSubscriptionDTO.getEventId()).get().getEventName(), exchangeName);
         }
         else{
+            log.error("cannot find the consumer with id "+consumerId);
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested consumer with Id "+ consumerId
                     +" does not exist", HttpStatus.NOT_FOUND);
         }
         return responseEntity;
     }
     public ResponseEntity<Object> saveDBConnection(DBWatchlist dbWatchlist) {
+        log.info("Saved DBWatchList "+dbWatchlist);
         return Util.prepareResponse(dbWatchlistRepository.save(dbWatchlist), HttpStatus.CREATED);
     }
 
@@ -675,29 +767,36 @@ public class ConsumerService {
         Optional<Consumer> consumer = subscribedEventsRepository.findConsumerBySubscriptionId(id);
 
         if(!existingAlert.isPresent()){
+            log.error("Alert Subscription with the Id " + id + "does mot exist");
             return Util.prepareErrorResponse("404" , "Alert Subscription with the Id " + id + "does mot exist", HttpStatus.NOT_FOUND);
         }
 
-        if(alertSubscriptionDTO.getAlertCriteria() == null)
+        if(alertSubscriptionDTO.getAlertCriteria() == null) {
+            log.error("Alert Criteria is missing, please try again by adding alert criteria");
             return Util.prepareErrorResponse("400", "Alert Criteria is missing, please try again by adding alert criteria", HttpStatus.BAD_REQUEST);
-
+        }
         if(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup() == null){
+            log.error("Alert Criteria must have a Recipient");
             return Util.prepareErrorResponse("400", "Alert Criteria must have a Recipient", HttpStatus.BAD_REQUEST);
         }
         if(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId() == null){
             RecepientGroup recepientGroup = recepientGroupRepository.save(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup());
             alertSubscriptionDTO.getAlertCriteria().setRecepientGroup(recepientGroup);
+            log.info("Saved recepient group");
         }
         else{
             Optional<RecepientGroup> recepientGroup = recepientGroupRepository.findById(alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId());
             if(recepientGroup.isPresent()){
                 alertSubscriptionDTO.getAlertCriteria().setRecepientGroup(recepientGroup.get());
+                log.info("fetched alert criteria");
             }
             else {
+                log.error("Cannot find Recipient Group with the id "+ alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId());
                 return Util.prepareErrorResponse("400", "Sorry the Recipient Group with the id "+ alertSubscriptionDTO.getAlertCriteria().getRecepientGroup().getGroupId() +" is not present", HttpStatus.BAD_REQUEST);
             }
         }
         alertCriteriaRepository.save(alertSubscriptionDTO.getAlertCriteria());
+        log.info("Saved alert subscription");
 
         List<Long> dbConnectionIds = alertSubscriptionDTO.getDbWatchlistIds();
         existingAlert.get().setAlertCriteria(alertSubscriptionDTO.getAlertCriteria());
@@ -708,15 +807,17 @@ public class ConsumerService {
             if(dbConnection.isPresent()) {
                 existingAlert.get().addWatchlist(dbConnection.get());
             }
-            else
-                return Util.prepareErrorResponse("400", "Connection with Id "+connectionId + " does not exist", HttpStatus.NOT_FOUND);
+            else {
+                log.error("Cannot find Connection with Id " + connectionId);
+                return Util.prepareErrorResponse("400", "Connection with Id " + connectionId + " does not exist", HttpStatus.NOT_FOUND);
+            }
         }
-
+        log.info("Saved alert subscription");
         return Util.prepareResponse(alertSubscriptionRepository.save(existingAlert.get()), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> addDBConnectionToAlertSubscription(Long alertId, DBWatchlist dbWatchlistRequest) {
-        System.out.println(alertId);
+
         AlertSubscription _alertSubscription = alertSubscriptionRepository.findById(alertId).map(alertSubscription -> {
             Long dbId = dbWatchlistRequest.getWatchlistId();
 
@@ -726,6 +827,7 @@ public class ConsumerService {
                         .orElseThrow(() -> new ResourceNotFoundException("Not found DB connection with id = " + dbId));
                 ;
                 alertSubscriptionRepository.save(alertSubscription);
+                log.info("Saved alert subscription");
                 return alertSubscription;
             }
 
@@ -740,15 +842,18 @@ public class ConsumerService {
 
     public ResponseEntity<Object> getDBWatchlist() {
         List<DBWatchlist> dbWatchlists = dbWatchlistRepository.findAll().stream().collect(Collectors.toList());
+        log.info("Fetched DBWatch list "+dbWatchlists);
         return Util.prepareResponse(dbWatchlists,HttpStatus.OK);
     }
 
     public ResponseEntity<Object> getRecipientList() {
         List<RecepientGroup> recipientGroups = recepientGroupRepository.findAll().stream().collect(Collectors.toList());
+        log.info("Fetched Recipient List "+recipientGroups);
         return Util.prepareResponse(recipientGroups, HttpStatus.OK);
     }
 
     public ResponseEntity<Object> saveRecipientGroup(RecepientGroup recepientGroup) {
+        log.info("Saved RecipientGroup "+recepientGroup);
         return Util.prepareResponse(recepientGroupRepository.save(recepientGroup),HttpStatus.CREATED);
     }
 
@@ -759,24 +864,30 @@ public class ConsumerService {
                 alertSubscription.get().setActive(false);
                 ResponseEntity<Object> responseEntity = Util.prepareResponse(alertSubscriptionRepository.save(alertSubscription.get()), HttpStatus.OK);
                 listenerController(alertSubscriptionRepository.findConsumerByAlertId(alertId).get().getConsumerName() + ".alert." +alertSubscription.get().getEventName(), "http://mq-service/stop/listener");
+                log.info("suspended alert with id "+alertId);
                 return responseEntity;
             }
         }
+        log.error("Cannot find Alert subscription with id "+ alertId);
         return Util.prepareErrorResponse("404", "Sorry the requested Alert subscription with id "+ alertId +" does not exist", HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Object> suspendAlertSubscription(String eventName, String consumerName, String providerName) {
         Optional<Consumer> consumer = consumerRepository.findByConsumerName(consumerName);
-        if(!consumer.isPresent())
-            return Util.prepareErrorResponse("404", "Consumer with name "+consumerName+" is not found", HttpStatus.NOT_FOUND);
+        if(!consumer.isPresent()) {
+            log.error("Cannot find Consumer with name " + consumerName);
+            return Util.prepareErrorResponse("404", "Consumer with name " + consumerName + " is not found", HttpStatus.NOT_FOUND);
+        }
         Optional<AlertSubscription> alertSubscription = alertSubscriptionRepository.findByConsumerIdAndEventNameAndProviderName(consumer.get().getConsumerId(), eventName, providerName);
         if(alertSubscription.isPresent()){
             if(alertSubscription.get().isActive()) {
                 alertSubscription.get().setActive(false);
                 ResponseEntity<Object> responseEntity = Util.prepareResponse(alertSubscriptionRepository.save(alertSubscription.get()), HttpStatus.OK);
+                log.info("Suspended Alert Subscription for "+consumerName);
                 return responseEntity;
             }
         }
+        log.error("Alert subscription with provided details does not exist");
         return Util.prepareErrorResponse("404", "Sorry the requested Alert subscription with provided details does not exist", HttpStatus.NOT_FOUND);
     }
 
@@ -787,9 +898,11 @@ public class ConsumerService {
                 alertSubscription.get().setActive(true);
                 ResponseEntity<Object> responseEntity = Util.prepareResponse(alertSubscriptionRepository.save(alertSubscription.get()), HttpStatus.OK);
                 listenerController(alertSubscriptionRepository.findConsumerByAlertId(alertId).get().getConsumerName() + ".alert." +alertSubscription.get().getEventName(), "http://mq-service/start/listener");
+                log.info("Activated Alert with id "+alertId);
                 return responseEntity;
             }
         }
+        log.error("requested Alert subscription with id "+ alertId+"  does not exist");
         return Util.prepareErrorResponse("404", "Sorry the requested Alert subscription with id "+ alertId +" does not exist", HttpStatus.NOT_FOUND);
     }
 
@@ -797,8 +910,10 @@ public class ConsumerService {
         Optional<AlertSubscription> alertSubscription = alertSubscriptionRepository.findById(alertId);
         if(alertSubscription.isPresent()){
             alertSubscriptionRepository.deleteById(alertId);
+            log.info("Unsubscribed to the event "+alertSubscription.get().getEventName() + " successfully");
             return Util.prepareResponse("Unsubscribed to the event "+alertSubscription.get().getEventName() + " successfully", HttpStatus.OK);
         }
+        log.error("Cannot find Alert Subscription with the Id " + alertId);
         return Util.prepareErrorResponse("404" , "Alert Subscription with the Id " + alertId + "does mot exist", HttpStatus.NOT_FOUND);
     }
 
@@ -809,8 +924,10 @@ public class ConsumerService {
             existingdbWatchlist.get().setUrl(dbWatchlist.getUrl());
             existingdbWatchlist.get().setUsername(dbWatchlist.getUsername());
             existingdbWatchlist.get().setPassword(dbWatchlist.getPassword());
+            log.info("Updated DB Connection");
             return Util.prepareResponse(dbWatchlistRepository.save(existingdbWatchlist.get()),HttpStatus.OK);
         }
+        log.error("Cannot find Connection with Id "+watchlistId);
         return Util.prepareErrorResponse("400", "Connection with Id "+watchlistId + " does not exist", HttpStatus.NOT_FOUND);
     }
 
@@ -818,8 +935,10 @@ public class ConsumerService {
         Optional<RecepientGroup> existingRecipientGroup = recepientGroupRepository.findById(groupId);
         if(existingRecipientGroup.isPresent()){
             existingRecipientGroup.get().setEmailIds(recepientGroup.getEmailIds());
+            log.info("Updated Recipient Group with id "+groupId);
             return Util.prepareResponse(recepientGroupRepository.save(existingRecipientGroup.get()),HttpStatus.OK);
         }
+        log.error("Cannot find Recipient Group with Id "+groupId );
         return Util.prepareErrorResponse("400", "Recipient Group with Id "+groupId + " does not exist", HttpStatus.NOT_FOUND);
     }
 }
