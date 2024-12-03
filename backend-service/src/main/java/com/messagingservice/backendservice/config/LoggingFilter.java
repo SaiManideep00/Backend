@@ -2,6 +2,7 @@ package com.messagingservice.backendservice.config;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,14 @@ public class LoggingFilter implements Filter {
         try {
             // Cast to HttpServletRequest to access HTTP-specific methods
             HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
             // Log basic request info and add context to logs
 //            MDC.put("requestId", UUID.randomUUID().toString());
+
             MDC.put("method", httpRequest.getMethod());
             MDC.put("path", httpRequest.getRequestURI());
+//            MDC.put("status", String.valueOf(httpServletResponse.getStatus()));
 
 
 

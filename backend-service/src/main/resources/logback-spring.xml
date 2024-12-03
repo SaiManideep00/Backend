@@ -6,6 +6,7 @@
 <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
             <includeMdcKeyName>method</includeMdcKeyName>
             <includeMdcKeyName>path</includeMdcKeyName>
+            <includeMdcKeyName>status</includeMdcKeyName>
         </encoder>
     </appender>
 

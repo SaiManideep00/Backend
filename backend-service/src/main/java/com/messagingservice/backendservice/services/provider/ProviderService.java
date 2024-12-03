@@ -90,12 +90,14 @@ public class ProviderService {
         if(producer.isPresent()) {
             ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(producer.get());
             responseEntity = Util.prepareResponse(providerDTO, HttpStatus.OK);
-            log.info("Provider with id : {}",id,responseEntity.getBody());
+
+            log.info("Fetched Provider with id : {} is : {}",id,responseEntity.getBody());
         }
         else {
-            log.error("");
+
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                     + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
         }
         //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id))
         return responseEntity;
@@ -106,9 +108,14 @@ public class ProviderService {
         Optional<Events> event = eventsRepository.findById(id);
         if(event.isPresent()) {
             responseEntity = Util.prepareResponse(event.get(), HttpStatus.OK);
+            log.info("Fetched Event with Id : {} is : {}", id,responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         //.orElseThrow(() -> new ResourceNotFoundException("Not found Provider with id = " + id));
         return responseEntity;
     }
@@ -119,9 +126,13 @@ public class ProviderService {
         if(producer.isPresent()){
             List<Events> connectionParameters = producer.get().getEvents();
             responseEntity = Util.prepareResponse(connectionParameters, HttpStatus.OK);
+            log.info("Events with Producer Id : {} are : {}",id,responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
 //        Producer producer1 = (Producer) responseEntity.getBody();
         return responseEntity;
     }
@@ -132,9 +143,13 @@ public class ProviderService {
         if(producer.isPresent()){
             List<Connections> connections = producer.get().getConnections();
             responseEntity = Util.prepareResponse(connections, HttpStatus.OK);
+            log.info("Connections with Producer Id : {} are : {}",id,responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}", responseEntity.getBody());
+        }
 //        Producer producer1 = (Producer) responseEntity.getBody();
         return responseEntity;
     }
@@ -183,7 +198,10 @@ public class ProviderService {
             events.setFilters(processResponse.getBody());
         }
         else{
-            return Util.prepareErrorResponse("400","Invalid file, please upload JSON/XML file", HttpStatus.BAD_REQUEST);
+              responseEntity = Util.prepareErrorResponse("400","Invalid file, please upload JSON/XML file", HttpStatus.BAD_REQUEST);
+            log.error("{}",responseEntity.getBody());
+              return responseEntity;
+
         }
         Connections connections = null;
         if(producer.isPresent()) {
@@ -192,10 +210,12 @@ public class ProviderService {
                 if(connectionsRepository.findById(events.getConnections().getConnectionId()).isPresent()) {
                     connections = connectionsRepository.findById(events.getConnections().getConnectionId()).get();
                     events.setConnections(connections);
+                    log.info("Connections set successfully for event with Id : {}", events.getEventId());
                 }
                 else{
                     responseEntity = Util.prepareErrorResponse("404", "Sorry the connection with Id " + events.getConnections().getConnectionId()
                             + " does not exist", HttpStatus.NOT_FOUND);
+                    log.error("{}", responseEntity.getBody());
                     return responseEntity;
                 }
             }
@@ -206,6 +226,7 @@ public class ProviderService {
                 }
                 else{
                     responseEntity = Util.prepareErrorResponse("404", "Please add connection details", HttpStatus.NOT_FOUND);
+                    log.error("{}",responseEntity.getBody());
                     return responseEntity;
                 }
             }
@@ -221,9 +242,11 @@ public class ProviderService {
             //Un comment later
             createExchange(producer.get().getProviderName()+"."+events.getEventName());
             responseEntity = Util.prepareResponse(producer.get().getEvents(), HttpStatus.OK);
+            log.error("Event {} added with File : {}",responseEntity.getBody(), file.getName());
         }
         else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                 + " does not exist", HttpStatus.NOT_FOUND);
+        log.error("{}",responseEntity.getBody());
         return responseEntity;
     }
 
@@ -326,6 +349,7 @@ public class ProviderService {
         if(!producer.isPresent()){
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                     + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
             return responseEntity;
         }
         if(events.getEventType().equalsIgnoreCase("push")) events.setConnections(null);
@@ -335,9 +359,11 @@ public class ProviderService {
                 if (connectionsRepository.findById(events.getConnections().getConnectionId()).isPresent()) {
                     connections = connectionsRepository.findById(events.getConnections().getConnectionId()).get();
                     events.setConnections(connections);
+                    log.info("Connections set successfully for Event with Id : {}",events.getEventNames());
                 } else {
                     responseEntity = Util.prepareErrorResponse("404", "Sorry the connection with Id " + events.getConnections().getConnectionId()
                             + " does not exist", HttpStatus.NOT_FOUND);
+                    log.error("{}",responseEntity.getBody());
                     return responseEntity;
                 }
             }
@@ -362,8 +388,11 @@ public class ProviderService {
             producerRepository.save(producer.get());
             responseEntity = Util.prepareResponse(producer.get().getEvents(), HttpStatus.OK);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}", responseEntity.getBody());
+        }
         return responseEntity;
     }
 
@@ -374,6 +403,7 @@ public class ProviderService {
         if (!existingEvent.isPresent()) {
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
                     + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
             return responseEntity;
         }
         if (events.getEventType().equalsIgnoreCase("pull")) {
@@ -386,6 +416,7 @@ public class ProviderService {
                     else {
                         responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with Id " + connection.getConnectionId()
                                 + " does not exist", HttpStatus.NOT_FOUND);
+                        log.error("{}",responseEntity.getBody());
                         return responseEntity;
                     }
                 } else {
@@ -412,6 +443,7 @@ public class ProviderService {
             else {
                 responseEntity = Util.prepareErrorResponse("400", "Cannot update type of event to pull as Connection details " +
                         "are missing. Pull type must have at least 1 active connection.", HttpStatus.BAD_REQUEST);
+                log.error("{}",responseEntity.getBody());
             }
 
         } else if (events.getEventType().equalsIgnoreCase("push")) {
@@ -421,6 +453,7 @@ public class ProviderService {
             responseEntity = Util.prepareResponse(existingEvent.get(), HttpStatus.OK);
         } else {
             responseEntity = Util.prepareErrorResponse("400", "Cannot update type of event as it is invalid type", HttpStatus.BAD_REQUEST);
+            log.warn("{}",responseEntity.getBody());
         }
         return responseEntity;
     }
@@ -431,9 +464,15 @@ public class ProviderService {
         if(producer.isPresent()){
             producer.get().addConnections(connection);
             producerRepository.save(producer.get());
-            return responseEntity = Util.prepareResponse(connection,HttpStatus.ACCEPTED);
+            responseEntity = Util.prepareResponse(connection,HttpStatus.ACCEPTED);
+            log.info("Provider with Id : {} added connection : {} successfully",providerId,responseEntity.getBody());
+            return responseEntity;
         }
-        return responseEntity = Util.prepareErrorResponse("404", "Sorry Requested Provider does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry Requested Provider does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
+        return responseEntity;
     }
 
     public ResponseEntity<Object> updateConnection(long connectionId, Connections connection) {
@@ -445,10 +484,12 @@ public class ProviderService {
             existingConnection.get().setUsername(connection.getUsername());
             existingConnection.get().setPassword(connection.getPassword());
             responseEntity = Util.prepareResponse(connectionsRepository.save(existingConnection.get()), HttpStatus.OK);
+            log.info("Updated Connection details for Connection with Id : {} and updated details is : {}",connectionId,connection);
         }
         else{
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with id "+ connectionId
                     +" does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
         }
         return responseEntity;
     }
@@ -458,9 +499,14 @@ public class ProviderService {
         if(eventsRepository.findById(id) != null) {
             subscribedEventsRepository.deleteByEventId(id);
             eventsRepository.deleteById(id);
+            log.info("Event with id :{} deleted successfully",id);
             return "Event with id "+id+" deleted successfully";
         }
-        else throw new ResourceNotFoundException("Not found Event with id = " + id);
+
+        else {
+            log.error("Not found Event with id : {}",id);
+            throw new ResourceNotFoundException("Not found Event with id = " + id);
+        }
     }
 
     public ResponseEntity<Object> updateProducer(Producer producer){
@@ -469,6 +515,7 @@ public class ProviderService {
         if(existingProducer == null){
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider details" +
                     " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
             return responseEntity;
         }
         existingProducer.setProviderTechnicalPOC(producer.getProviderTechnicalPOC());
@@ -477,6 +524,7 @@ public class ProviderService {
         producerRepository.save(existingProducer);
         ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(existingProducer);
         responseEntity = Util.prepareResponse(providerDTO, HttpStatus.OK);
+        log.info("Updated Producer Successfully with details : {}",producer);
         return responseEntity;
     }
 
@@ -490,9 +538,13 @@ public class ProviderService {
             }
             ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(producer.get());
             responseEntity = Util.prepareResponse(providerDTO, HttpStatus.OK);
+            log.info("Activated Provider and details are : {}",responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         return responseEntity;
     }
 
@@ -506,9 +558,13 @@ public class ProviderService {
             }
             ProviderBasicDetailsDTO providerDTO = providerMapper.toProviderBasicDetailsDTO(producer.get());
             responseEntity = Util.prepareResponse(providerDTO, HttpStatus.OK);
+            log.info("Suspended Provider with details : {}",responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         return responseEntity;
     }
 
@@ -521,9 +577,13 @@ public class ProviderService {
                 eventsRepository.save(event.get());
             }
             responseEntity = Util.prepareResponse(event, HttpStatus.OK);
+            log.info("Event activated successfully : {}",responseEntity.getBody());
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         return responseEntity;
     }
     public ResponseEntity<Object> suspendEvent(long id){
@@ -535,9 +595,13 @@ public class ProviderService {
                 eventsRepository.save(event.get());
             }
             responseEntity = Util.prepareResponse(event, HttpStatus.OK);
+            log.info("Event with Id : {} , Successfully suspended",id);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested event with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         return responseEntity;
     }
 
@@ -550,9 +614,13 @@ public class ProviderService {
                 connectionsRepository.save(connection.get());
             }
             responseEntity = Util.prepareResponse(connection, HttpStatus.OK);
+            log.info("Connection with Id : {} , Successfully activated",id);
         }
-        else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with Id " + id
-                + " does not exist", HttpStatus.NOT_FOUND);
+        else {
+            responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with Id " + id
+                    + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
+        }
         return responseEntity;
     }
 
@@ -565,9 +633,11 @@ public class ProviderService {
                 connectionsRepository.save(connection.get());
             }
             responseEntity = Util.prepareResponse(connection, HttpStatus.OK);
+            log.info("Connection with Id : {} suspended successfully",id);
         }
         else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested connection with Id " + id
                 + " does not exist", HttpStatus.NOT_FOUND);
+        log.error("{}",responseEntity.getBody());
         return responseEntity;
     }
 
@@ -575,16 +645,15 @@ public class ProviderService {
         ResponseEntity<Object> responseEntity;
         Optional<Producer> producer = producerRepository.findById(id);
         if(producer.isPresent()){
-            log.info("Trying to delete");
             //kafkaTopicConfig.deleteTopic(producer.get().getKafkaTopicName());
             producerRepository.deleteById(id);
             responseEntity = Util.prepareResponse("Producer with id " + id + " deleted successfully.", HttpStatus.OK);
-            log.info("deleted Successfully",responseEntity);
-            System.out.println(responseEntity);
+            log.info("Producer with Id : {} deleted successfully",id);
         }
         else {
             responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                     + " does not exist", HttpStatus.NOT_FOUND);
+            log.error("{}",responseEntity.getBody());
         }
         return responseEntity;
     }
@@ -596,8 +665,10 @@ public class ProviderService {
 //        filters = stream.collect(Collectors.toList());
         Optional<Events> events = eventsRepository.findById(eventId);
         if(events.isPresent()){
+            log.info("Events successfully filtered : {} ",events.get().getFilters());
             return Util.prepareResponse(events.get().getFilters(), HttpStatus.OK);
         }
+        log.error( "404","Event with Id : {}"+ eventId + " not found");
         return Util.prepareErrorResponse("404", "Event with Id "+ eventId + " not found", HttpStatus.NOT_FOUND);
 
     }
