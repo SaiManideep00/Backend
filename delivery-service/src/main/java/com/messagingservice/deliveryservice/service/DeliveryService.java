@@ -52,11 +52,13 @@ public class DeliveryService {
                     .block();
             System.out.println(response.getStatusCode());
             if(response.getStatusCode().equals(HttpStatus.ACCEPTED) || response.getStatusCode().equals(HttpStatus.OK)){
+                log.info("Delivered succesfully via rest API");
                 return ResponseEntity.ok().body("Delivered Successfully");
             }
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        log.error("delivery failed");
         return ResponseEntity.ok().body("Delivery Failed");
     }
 
@@ -78,6 +80,7 @@ public class DeliveryService {
             statement.close();
             connection.close();
             if (rowsInserted > 0) {
+                log.info("Successfully written to DB");
                 return ResponseEntity.ok().body("Delivered Successfully");
             }
         } catch (SQLException e) {
@@ -85,15 +88,19 @@ public class DeliveryService {
             ResponseEntity.badRequest().body(e.getMessage());
             //ResponseEntity.internalServerError().body(e.getMessage());
         }
+        log.error("Delivery failed");
         return ResponseEntity.badRequest().body("Delivery Failed");
     }
 
     public boolean validateFilters(Map<String, List<List<String>>> message, List<Filter> filters){
+        log.info("Validating filters");
         if(filters.size() == 0)
             return true;
         for(Filter filter : filters){
-            if(! message.containsKey(filter.getFilterKey()))
+            if(! message.containsKey(filter.getFilterKey())) {
+                log.error("Cannot find filter");
                 return false;
+            }
             List<List<String>> lists = message.get(filter.getFilterKey());
             boolean flag = false;
             for(List<String> values : lists){
@@ -122,31 +129,38 @@ public class DeliveryService {
                     .header("consumerName", consumerName)
                     .retrieve().toEntity(SubscribedEvent.class)
                     .block();
+            log.info("fetched subscribed event "+response);
             System.out.println(response);
         } catch (URISyntaxException e) {
+            log.info("Cannot fetch event");
             throw new RuntimeException(e);
         }
         SubscribedEvent subscribedEvent = response.getBody();
         Map<String, List<List<String>>> message;
         if(subscribedEvent.getSourceDataFormat().equalsIgnoreCase("json")){
             String jsonBody = gson.toJson(obj);
+            log.info("JSON is "+jsonBody);
             System.out.println(jsonBody);
             message = jsonParserService.jsonToMap(jsonBody);
         }
         else{
             try{
                 String xmlBody = xmlMapper.writeValueAsString(obj);
+                log.info("XML is "+xmlBody);
                 System.out.println(xmlBody);
                 message = xmlParserService.xmlToMap(xmlBody);
             } catch (JsonProcessingException e) {
+                log.error("JSon Processing Exception");
                 throw new RuntimeException(e);
             } catch (JSONException e) {
+                log.error("Json Exception");
                 throw new RuntimeException(e);
             }
 
         }
         List<Filter> filters = subscribedEvent.getFilters();
         if(!validateFilters(message,filters)){
+            log.error("Filters did not match, message discarded");
             return ResponseEntity.ok().body("Filters did not match, message discarded");
         }
         if (subscribedEvent.getSubscribedEventConnections().getConnectionType().equals("https") || subscribedEvent.getSubscribedEventConnections().getConnectionType().equals("http")) {
@@ -171,6 +185,7 @@ public class DeliveryService {
                     .retrieve().toEntity(AlertSubscription.class)
                     .block();
         } catch (URISyntaxException e) {
+            log.error("Cannot find URL");
             throw new RuntimeException(e);
         }
         AlertSubscription alertSubscription = response.getBody();
@@ -184,13 +199,18 @@ public class DeliveryService {
             String subject = eventName + " Alert: Criteria Matched";
             String[] values = {eventName,providerName,matchedCriteria};
             try {
+
                 EmailSender.sendHtmlEmail(alertSubscription.getAlertCriteria().getRecepientGroup().getEmailIds(), subject, values);
+                log.info("Sent email ");
             } catch (MessagingException e) {
+                log.error("Message Exception");
                 throw new RuntimeException(e);
             }
             log.info("Notified Recipients...");
+            log.info("Criteria Matched for the alert subscription and Notified Successfully");
             return ResponseEntity.ok().body("Criteria Matched for the alert subscription and Notified Successfully");
         }
+        log.error("Criteria did not match, message discarded");
         return ResponseEntity.ok().body("Criteria did not match, message discarded");
     }
 
@@ -231,8 +251,10 @@ public class DeliveryService {
                     .body(BodyInserters.fromValue(data))
                     .retrieve().toEntity(String.class)
                     .block();
+            log.info("published data to MQ "+response);
             System.out.println(response);
         } catch (URISyntaxException e) {
+            log.error("Invalid URI");
             throw new RuntimeException(e);
         }
         return response;

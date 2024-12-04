@@ -2,6 +2,7 @@ package com.messagingservice.deliveryservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@Slf4j
 public class JSONParserService {
     public static Map<String, List<List<String>>> jsonToMap(String json) throws JSONException {
         Map<String, List<List<String>>> hashMap = new TreeMap<>();
@@ -27,7 +29,9 @@ public class JSONParserService {
                 Object value = entry.getValue();
                 System.out.println(key + " = " + value);
             }
+            log.info("Converting Json to Map");
         } catch (IOException e) {
+            log.error("IOException");
             e.printStackTrace();
         }
         return hashMap;

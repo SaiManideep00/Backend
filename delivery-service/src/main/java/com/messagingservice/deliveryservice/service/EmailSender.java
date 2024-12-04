@@ -1,5 +1,7 @@
 package com.messagingservice.deliveryservice.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -9,7 +11,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
-
+@Slf4j
 public class EmailSender {
     private static final String EMAIL_USERNAME = "projectone.alerts@gmail.com";
     private static final String EMAIL_PASSWORD = "twpxwylorcsadzuw";
@@ -32,6 +34,7 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
+                log.info("Sent to password authentication");
                 return new PasswordAuthentication(EMAIL_USERNAME, EMAIL_PASSWORD);
             }
         });
@@ -51,8 +54,11 @@ public class EmailSender {
             Transport.send(message);
 
         } catch (AddressException e) {
+            log.error("Address Exception");
+
             throw new RuntimeException(e);
         } catch (MessagingException e) {
+            log.error("Message Exception");
             throw new RuntimeException(e);
         }
     }
