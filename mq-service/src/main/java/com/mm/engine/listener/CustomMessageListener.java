@@ -92,6 +92,7 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
                     .body(BodyInserters.fromValue(content))
                     .retrieve().toEntity(String.class)
                     .block();
+            log.info("Delivery Successful : {}", response.getBody());
 
 //            System.out.println(response.getBody());
             //connectionFactory.createConnection().createChannel(true).queueUnbind(queueName, exchangeName, "routetoall");

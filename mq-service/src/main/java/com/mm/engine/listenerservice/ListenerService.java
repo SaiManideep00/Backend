@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.net.URISyntaxException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @XRayEnabled
 public class ListenerService {
     private final WebClient.Builder webClientBuilder;
@@ -44,10 +46,11 @@ public class ListenerService {
             throw new RuntimeException(e);
         }
         if(response.getStatusCode().equals(HttpStatus.ACCEPTED) || response.getStatusCode().equals(HttpStatus.OK)){
-            System.out.println("Subscription Suspended Successfully");
+            log.info("Subscription Suspended Successfully");
         }
         else{
-            System.out.println("Subscription Suspend Failed");
+            log.warn("Subscription Suspend Failed",response.getBody());
+
         }
         System.out.println(response.getStatusCode());
         System.out.println(response.getBody());
