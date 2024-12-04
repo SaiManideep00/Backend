@@ -8,6 +8,7 @@ com\mm\engine\config\XrayConfig.class
 com\mm\engine\recoverer\CustomMessageRecoverer.class
 com\mm\engine\config\RabbitMQConfig.class
 com\mm\engine\controller\ProviderController.class
+com\mm\engine\config\LoggingFilter.class
 com\mm\engine\config\WebClientConfig.class
 com\mm\engine\controller\DynamicContainerLister.class
 com\mm\engine\MQServiceApplication.class

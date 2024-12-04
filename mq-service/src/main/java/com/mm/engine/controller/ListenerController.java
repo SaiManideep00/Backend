@@ -124,6 +124,7 @@ public class ListenerController {
         //rabbitAdmin.removeBinding();
         createListener(queueName);
         rabbitAdmin.declareBinding(new Binding(queueName, Binding.DestinationType.QUEUE, exchangeName,"", null));
+        log.info("exchange: " + exchangeName + "bound to queue: " + queueName + " successfully.");
         return "exchange: " + exchangeName + "bound to queue: " + queueName + " successfully.";
     }
 
@@ -137,7 +138,9 @@ public class ListenerController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(rabbitAdmin.getQueueProperties(queueName));
+        log.info(String.valueOf(rabbitAdmin.getQueueProperties(queueName)));
+        log.info("Queue: " + queueName + " unbound from exchange: " + exchangeName + "successfully.");
+
         return "Queue: " + queueName + " unbound from exchange: " + exchangeName + "successfully.";
     }
     @PutMapping("/start/listener")
@@ -150,8 +153,10 @@ public class ListenerController {
                 log.info("Listener status: "+"Listener Started..");
         }
         catch (Exception e){
+            log.error("Internal Server Error");
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+        log.info("Consumer Started");
         return ResponseEntity.ok().body("Consumer Started");
     }
 
@@ -165,8 +170,10 @@ public class ListenerController {
                 log.info("Listener status: "+"Listener Stopped..");
         }
         catch (Exception e){
+            log.error("Internal Server Error");
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+        log.info("Consumer Stopped");
         return ResponseEntity.ok().body("Consumer Stopped");
     }
 

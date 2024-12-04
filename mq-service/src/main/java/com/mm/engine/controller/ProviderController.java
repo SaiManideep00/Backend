@@ -1,6 +1,7 @@
 package com.mm.engine.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/provider")
 @XRayEnabled
+@Slf4j
 public class ProviderController {
     private final ConnectionFactory connectionFactory;
     private final RabbitAdmin rabbitAdmin;
@@ -29,6 +31,7 @@ public class ProviderController {
     @GetMapping("/create/exchange")
     public String createExchange(@RequestParam String exchangeName) {
         // Declare exchange
+        log.info("Exchange created successfully."+exchangeName);
         rabbitAdmin.declareExchange(new FanoutExchange(exchangeName));
         return "Exchange created successfully.";
     }

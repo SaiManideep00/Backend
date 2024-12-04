@@ -115,7 +115,7 @@ public class DeliveryService {
         return true;
     }
     public ResponseEntity<String> identifyDeliveryMethodAndDeliver(String providerName, String eventName, String consumerName, Object obj) {
-        String baseUrl = "http://BackendServiceALB-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_event";
+        String baseUrl = "http://backendservicealb-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_event";
         ResponseEntity<SubscribedEvent> response;
         try {
             // Build the URL with query parameters
@@ -170,7 +170,7 @@ public class DeliveryService {
     }
 
     public ResponseEntity<String> notify(String providerName, String eventName, String consumerName, Object obj) {
-        String baseUrl = "http://BackendServiceALB-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_alert";
+        String baseUrl = "http://backendservicealb-788612567.us-east-2.elb.amazonaws.com/api/get/subscribed_alert";
         ResponseEntity<AlertSubscription> response;
         try {
             // Build the URL with query parameters
