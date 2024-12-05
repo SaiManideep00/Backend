@@ -1,0 +1,14 @@
+{
+  "Version": 1,
+  "Rules": [
+    {
+      "Description": "Sample all HTTP requests",
+      "ServiceName": "*",
+      "HTTPMethod": "*",
+      "URLPath": "*",
+      "FixedRate": 1.0,
+      "ReservoirSize": 1,
+      "Sampled": true
+    }
+  ]
+}

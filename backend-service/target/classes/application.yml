@@ -51,8 +51,18 @@ server:
 #    org.springframework.security: trace
 #    com.messagingservice.backendservice.config.LoggingFilter: info
 #  config: classpath:logback-spring.xml
-
-
+com:
+  amazonaws:
+    xray:
+      serviceName: Backend-Service
+      sampling:
+        enabled: true
+        rules: classpath:/sampling-rules.json
+  logging:
+    level:
+      com:
+        amazonaws:
+          xray: DEBUG
 
 
 

@@ -1,5 +1,0 @@
-# Created at 2024-12-04T09:58:02.332
-Boot Manifest-JAR contains absolute paths in classpath 'D:\CloudWatch\Producer-ConsumerBackend\Producer-ConsumerBackend\delivery-service\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-

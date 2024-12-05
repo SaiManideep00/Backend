@@ -17,3 +17,15 @@ logging:
     root: info
     sql: error
     org.springframework.security: trace
+com:
+  amazonaws:
+    xray:
+      serviceName: Delivery-Service
+      sampling:
+        enabled: true
+        rules: classpath:/sampling-rules.json
+  logging:
+    level:
+      com:
+        amazonaws:
+          xray: DEBUG
