@@ -50,7 +50,7 @@ public class ProviderController {
 
     }
 
-    @Observed(name = "get.providers")
+    //@Observed(name = "get.providers")
     @GetMapping("get/provider/{id}")
     public ResponseEntity<Object> getProviderById(@PathVariable Long id){
 

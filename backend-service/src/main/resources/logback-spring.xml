@@ -7,6 +7,7 @@
             <includeMdcKeyName>method</includeMdcKeyName>
             <includeMdcKeyName>path</includeMdcKeyName>
             <includeMdcKeyName>status</includeMdcKeyName>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
         </encoder>
     </appender>
 
@@ -14,6 +15,8 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>backend-service/logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+
             <fileNamePattern>backend-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -22,6 +25,7 @@
 <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
             <includeMdcKeyName>method</includeMdcKeyName>
             <includeMdcKeyName>path</includeMdcKeyName>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
         </encoder>
     </appender>
 

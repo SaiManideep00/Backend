@@ -1,5 +1,7 @@
 package com.messagingservice.backendservice.config;
 
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.TraceID;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,6 +40,12 @@ public class LoggingFilter implements Filter {
             MDC.put("path", httpRequest.getRequestURI());
 //            MDC.put("status", String.valueOf(httpServletResponse.getStatus()));
 
+            String traceId = AWSXRay.getCurrentSegmentOptional()
+                    .map(segment -> segment.getTraceId().toString())
+                    .orElse("Dummy");
+
+
+                MDC.put("traceId", traceId); // Add the trace ID to MDC
 
 
 

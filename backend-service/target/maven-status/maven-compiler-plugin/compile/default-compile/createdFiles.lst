@@ -18,7 +18,6 @@ com\messagingservice\backendservice\util\XMLParser.class
 com\messagingservice\backendservice\repository\provider\EventsRepository.class
 com\messagingservice\backendservice\dto\consumer\SubscriptionFinderDTO.class
 com\messagingservice\backendservice\model\provider\Producer.class
-com\messagingservice\backendservice\config\PerformanceTrackerHandler.class
 com\messagingservice\backendservice\dto\consumer\AlertSubscriptionDTO.class
 com\messagingservice\backendservice\config\WebClientConfig.class
 com\messagingservice\backendservice\mapper\ProviderMapper.class
@@ -40,7 +39,6 @@ com\messagingservice\backendservice\repository\consumer\FilterRepository.class
 com\messagingservice\backendservice\dto\consumer\AlertCriteriaDTO.class
 com\messagingservice\backendservice\dto\consumer\ConsumerBasicDetailsDTO.class
 com\messagingservice\backendservice\repository\consumer\SubscribedEventsRepository.class
-com\messagingservice\backendservice\config\ObservationConfig.class
 com\messagingservice\backendservice\repository\consumer\SubscribedEventConnectionsRepository.class
 com\messagingservice\backendservice\dto\provider\EventName.class
 com\messagingservice\backendservice\exception\DuplicateEntryExcepion.class
