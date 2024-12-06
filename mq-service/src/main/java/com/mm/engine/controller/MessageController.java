@@ -27,7 +27,7 @@ public class MessageController {
         String jsonBody = gson.toJson(message);
 //        if(amqpAdmin.get)
         rabbitTemplate.convertAndSend(exchange, routingKey, jsonBody.getBytes());
-        log.info("Message sent to RabbitMQ...");
+        log.info("Message sent to RabbitMQ..."+jsonBody);
         return ResponseEntity.ok("Message sent to RabbitMQ...");
     }
 }

@@ -24,8 +24,3 @@ com:
       sampling:
         enabled: true
         rules: classpath:/sampling-rules.json
-  logging:
-    level:
-      com:
-        amazonaws:
-          xray: DEBUG

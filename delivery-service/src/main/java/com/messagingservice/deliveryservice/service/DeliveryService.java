@@ -251,7 +251,7 @@ public class DeliveryService {
                     .body(BodyInserters.fromValue(data))
                     .retrieve().toEntity(String.class)
                     .block();
-            log.info("published data to MQ "+response);
+            log.info("published data to MQ "+response.getBody());
             System.out.println(response);
         } catch (URISyntaxException e) {
             log.error("Invalid URI");

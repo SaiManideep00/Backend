@@ -42,10 +42,14 @@ public class LoggingFilter implements Filter {
 
             String traceId = AWSXRay.getCurrentSegmentOptional()
                     .map(segment -> segment.getTraceId().toString())
-                    .orElse("Dummy");
+                    .orElse(null);
+
+            // Set the traceId in MDC
+            if(traceId!=null)
+                MDC.put("traceId", traceId);
 
 
-                MDC.put("traceId", traceId); // Add the trace ID to MDC
+                //MDC.put("traceId", traceId); // Add the trace ID to MDC
 
 
 

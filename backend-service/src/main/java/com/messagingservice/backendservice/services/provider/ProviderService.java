@@ -242,7 +242,7 @@ public class ProviderService {
             //Un comment later
             createExchange(producer.get().getProviderName()+"."+events.getEventName());
             responseEntity = Util.prepareResponse(producer.get().getEvents(), HttpStatus.OK);
-            log.error("Event {} added with File : {}",responseEntity.getBody(), file.getName());
+            log.info("Event {} added with File : {}",responseEntity.getBody(), file.getName());
         }
         else responseEntity = Util.prepareErrorResponse("404", "Sorry the requested provider with Id " + id
                 + " does not exist", HttpStatus.NOT_FOUND);
@@ -337,7 +337,7 @@ public class ProviderService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println(str);
+            log.info(str);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

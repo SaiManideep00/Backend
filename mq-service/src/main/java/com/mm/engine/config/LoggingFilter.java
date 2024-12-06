@@ -1,6 +1,7 @@
 package com.mm.engine.config;
 
 
+import com.amazonaws.xray.AWSXRay;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,13 @@ public class LoggingFilter implements Filter {
 //            MDC.put("requestId", UUID.randomUUID().toString());
             MDC.put("method", httpRequest.getMethod());
             MDC.put("path", httpRequest.getRequestURI());
+            String traceId = AWSXRay.getCurrentSegmentOptional()
+                    .map(segment -> segment.getTraceId().toString())
+                    .orElse(null);
+
+            // Set the traceId in MDC
+            if(traceId!=null)
+                MDC.put("traceId", traceId);
 
 
 

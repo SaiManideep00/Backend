@@ -31,8 +31,9 @@ public class ProviderController {
     @GetMapping("/create/exchange")
     public String createExchange(@RequestParam String exchangeName) {
         // Declare exchange
-        log.info("Exchange created successfully."+exchangeName);
+
         rabbitAdmin.declareExchange(new FanoutExchange(exchangeName));
+        log.info("Exchange created successfully."+exchangeName);
         return "Exchange created successfully.";
     }
 }
