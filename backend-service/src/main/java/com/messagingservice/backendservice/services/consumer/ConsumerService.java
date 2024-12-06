@@ -61,7 +61,7 @@ public class ConsumerService {
     }
 
     public void createConsumerQueue(String queueName){
-        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/create/listener";
+        String baseUrl = "http://mq-service:9193/create/listener";
 
         try {
             // Build the URL with query parameters
@@ -220,7 +220,7 @@ public class ConsumerService {
     }
 
     public void subscribeToExchange(String queueName, String exchangeName){
-        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/bind";
+        String baseUrl = "http://mq-service:9193/bind";
 
         try {
             // Build the URL with query parameters
@@ -269,7 +269,7 @@ public class ConsumerService {
     }
 
     public void unSubscribeToExchange(String queueName, String exchangeName){
-        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/unbind";
+        String baseUrl = "http://mq-service:9193/unbind";
         try {
             // Build the URL with query parameters
             URIBuilder uriBuilder = new URIBuilder(baseUrl);

@@ -322,7 +322,7 @@ public class ProviderService {
     }
 
     public void createExchange(String exchangeName){
-        String baseUrl = "http://albformqservice-515380053.us-east-2.elb.amazonaws.com/api/provider/create/exchange";
+        String baseUrl = "http://mq-service:9193/api/provider/create/exchange";
 
         try {
             // Build the URL with query parameters
