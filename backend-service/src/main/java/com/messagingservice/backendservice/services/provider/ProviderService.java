@@ -1,7 +1,7 @@
 package com.messagingservice.backendservice.services.provider;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+//import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
 import com.messagingservice.backendservice.dto.provider.EventGroup;
 import com.messagingservice.backendservice.dto.provider.EventsDTO;
@@ -268,7 +268,7 @@ public class ProviderService {
         }
         else{
             //System.out.println(events.getData().toString());
-            XmlMapper xmlMapper = new XmlMapper();
+           // XmlMapper xmlMapper = new XmlMapper();
             String xmlBody=(String) events.getData();
             System.out.println(xmlBody);
             filterMap = XMLParser.xmlToMap(xmlBody);

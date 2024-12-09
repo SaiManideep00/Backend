@@ -11,6 +11,6 @@ public class XrayConfig {
     @Bean
     public Filter TracingFilter()
     {
-        return new AWSXRayServletFilter(SegmentNamingStrategy.dynamic("DeliveryService"));
+        return new AWSXRayServletFilter("Delivery-Service");
     }
 }

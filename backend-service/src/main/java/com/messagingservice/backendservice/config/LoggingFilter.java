@@ -1,6 +1,7 @@
 package com.messagingservice.backendservice.config;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.TraceID;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,35 +29,26 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        try {
-            // Cast to HttpServletRequest to access HTTP-specific methods
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-            // Log basic request info and add context to logs
-//            MDC.put("requestId", UUID.randomUUID().toString());
+
+
+        try {
 
             MDC.put("method", httpRequest.getMethod());
             MDC.put("path", httpRequest.getRequestURI());
-//            MDC.put("status", String.valueOf(httpServletResponse.getStatus()));
-
-            String traceId = AWSXRay.getCurrentSegmentOptional()
-                    .map(segment -> segment.getTraceId().toString())
-                    .orElse(null);
-
-            // Set the traceId in MDC
-            if(traceId!=null)
+            AWSXRay.getCurrentSegmentOptional().ifPresent(segment -> {
+                String traceId = segment.getTraceId().toString();
                 MDC.put("traceId", traceId);
+            });
 
-
-                //MDC.put("traceId", traceId); // Add the trace ID to MDC
-
-
-
-            // Pass the request along the filter chain
             chain.doFilter(request, response);
-        } finally {
+        }
+
+            finally {
             MDC.clear(); // Clean up after the request is processed
+
         }
     }
 }

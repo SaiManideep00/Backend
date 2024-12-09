@@ -128,5 +128,15 @@
             <artifactId>spring-boot-starter-aop</artifactId>
             <version>2.5.2</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.amazonaws</groupId>-->
+<!--            <artifactId>aws-xray-recorder-sdk-httputil</artifactId>-->
+<!--            <version>2.11.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.amazonaws</groupId>-->
+<!--            <artifactId>aws-xray-recorder-sdk-webflux-httpclients</artifactId>-->
+<!--            <version>2.14.0</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

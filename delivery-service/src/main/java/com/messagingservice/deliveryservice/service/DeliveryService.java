@@ -1,5 +1,7 @@
 package com.messagingservice.deliveryservice.service;
 
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -252,6 +254,11 @@ public class DeliveryService {
                     .retrieve().toEntity(String.class)
                     .block();
             log.info("published data to MQ "+response.getBody());
+            Segment segment =AWSXRay.getCurrentSegmentOptional().orElse(null);
+            String traceId=null;
+            if(segment!=null)
+                 traceId=segment.getTraceId().toString();
+            System.out.println("Trace ID sent is "+traceId);
             System.out.println(response);
         } catch (URISyntaxException e) {
             log.error("Invalid URI");
