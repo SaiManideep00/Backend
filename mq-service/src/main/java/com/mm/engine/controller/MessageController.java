@@ -23,6 +23,7 @@ public class MessageController {
 
     @PostMapping("/publish")
     public ResponseEntity<String> sendMessage(@RequestBody Object message, @RequestParam("exchange") String exchange, @RequestParam("routingKey") String routingKey){
+
         Gson gson = new Gson();
         String jsonBody = gson.toJson(message);
 //        if(amqpAdmin.get)
