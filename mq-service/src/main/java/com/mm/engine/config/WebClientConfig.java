@@ -16,6 +16,7 @@ import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebClientConfig {
+
     @Bean
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder()
@@ -36,6 +37,5 @@ public class WebClientConfig {
             return next.exchange(requestBuilder.build());
         };
     }
-
 
 }

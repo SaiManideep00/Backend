@@ -29,6 +29,7 @@ public class DeliveryController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> deliver(@RequestHeader String providerName, @RequestHeader String eventName,
                                           @RequestHeader String consumerName, @RequestHeader String subscriptionType, @RequestBody Object object){
+
         if(subscriptionType.equalsIgnoreCase("alert")){
             return deliveryService.notify(providerName, eventName, consumerName, object);
         }

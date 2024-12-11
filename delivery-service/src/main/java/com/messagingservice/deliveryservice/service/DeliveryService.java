@@ -65,6 +65,7 @@ public class DeliveryService {
     }
 
     public ResponseEntity<String> writeToDB(Object obj, SubscribedEventConnections subscribedEventConnections){
+
         String url = subscribedEventConnections.getUrl();
         String username = subscribedEventConnections.getUsername();
         String password = subscribedEventConnections.getPassword();
@@ -118,6 +119,7 @@ public class DeliveryService {
     }
     public ResponseEntity<String> identifyDeliveryMethodAndDeliver(String providerName, String eventName, String consumerName, Object obj) {
         String baseUrl = "http://backend-service:9191/api/get/subscribed_event";
+
         ResponseEntity<SubscribedEvent> response;
         try {
             // Build the URL with query parameters
@@ -127,14 +129,14 @@ public class DeliveryService {
                     .uri(uri)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header("providerName", providerName)
-                    .header("eventName", eventName)
                     .header("consumerName", consumerName)
+                    .header("eventName", eventName)
                     .retrieve().toEntity(SubscribedEvent.class)
                     .block();
             log.info("fetched subscribed event "+response);
-            System.out.println(response);
+
         } catch (URISyntaxException e) {
-            log.info("Cannot fetch event");
+            log.info("Exception in fetching event");
             throw new RuntimeException(e);
         }
         SubscribedEvent subscribedEvent = response.getBody();
