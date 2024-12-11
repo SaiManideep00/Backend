@@ -32,6 +32,7 @@ public class WebClientConfig {
             AWSXRay.getCurrentSegmentOptional().ifPresent(segment -> {
                 String traceHeader = TraceHeader.fromEntity(segment).toString();
                 requestBuilder.header("X-Amzn-Trace-Id", traceHeader);
+                System.out.println("TraceHeader added to request: " + traceHeader);
             });
 
             // Proceed with the modified request

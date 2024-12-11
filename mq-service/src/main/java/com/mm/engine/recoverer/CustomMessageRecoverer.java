@@ -1,5 +1,6 @@
 package com.mm.engine.recoverer;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.mm.engine.controller.DynamicContainerLister;
 import com.mm.engine.listenerservice.ListenerService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.amqp.rabbit.retry.MessageRecoverer;
 
 @Slf4j
+@XRayEnabled
 public class CustomMessageRecoverer implements MessageRecoverer {
     private final RabbitListenerEndpointRegistry endpointRegistry;
     private DynamicContainerLister dynamicContainerLister;

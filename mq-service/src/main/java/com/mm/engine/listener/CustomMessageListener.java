@@ -1,5 +1,8 @@
 package com.mm.engine.listener;
 
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
@@ -18,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
 
 @Slf4j
+@XRayEnabled
 public class CustomMessageListener implements ChannelAwareMessageListener {
 
     //amqpAdmin.getBindings().get(queueName);
@@ -92,6 +96,13 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
                     .body(BodyInserters.fromValue(content))
                     .retrieve().toEntity(String.class)
                     .block();
+            Segment segment = AWSXRay.getCurrentSegmentOptional().orElse(null);
+            String traceId=null;
+            if(segment!=null)
+                traceId=segment.getTraceId().toString();
+            System.out.println("Trace ID sent is "+traceId);
+            System.out.println("Received from delivery "+response);
+
             log.info("Delivery Successful : {}", response.getBody());
 
 //            System.out.println(response.getBody());

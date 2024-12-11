@@ -170,6 +170,7 @@ public class ProviderService {
                 String jsonData = FileUtil.readJSONFile(file);
                 Map<String, List<List<String>>> hashMap = JSONParser.jsonToMap(jsonData);
                 filters = hashMap.keySet();
+                log.info("Filters are"+filters);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -180,6 +181,7 @@ public class ProviderService {
                 Map<String, Object> hashmap = XMLParser.getKeys(file);
                 System.out.println(hashmap);
                 filters = hashmap.keySet();
+                log.info("Filters are"+filters);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

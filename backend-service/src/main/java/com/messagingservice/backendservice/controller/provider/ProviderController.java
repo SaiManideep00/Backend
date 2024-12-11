@@ -38,6 +38,13 @@ public class ProviderController {
     public String healthCheck() {
         return "Application is running";
     }
+
+    @GetMapping("/test")
+    public String test()
+    {
+        return "Test sent from Backend";
+    }
+
     @RequestMapping(path = "add/provider", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addProvider(@RequestBody Producer producer){
         return providerService.saveProducer(producer);

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.messagingservice.backendservice.DemoApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.879 s - in com.messagingservice.backendservice.DemoApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.635 s - in com.messagingservice.backendservice.DemoApplicationTests
