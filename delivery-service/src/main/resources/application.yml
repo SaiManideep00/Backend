@@ -8,19 +8,13 @@ server:
 
 
 logging:
-  file:
-    name: delivery-service/logs/application.log
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{36} - %msg%n"
   level:
     web: error
     root: info
     sql: error
     org.springframework.security: trace
-com:
-  amazonaws:
-    xray:
-      serviceName: Delivery-Service
-      sampling:
-        enabled: true
-        rules: classpath:/sampling-rules.json
+
+
+

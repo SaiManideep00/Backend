@@ -38,10 +38,7 @@ public class LoggingFilter implements Filter {
 
             MDC.put("method", httpRequest.getMethod());
             MDC.put("path", httpRequest.getRequestURI());
-            AWSXRay.getCurrentSegmentOptional().ifPresent(segment -> {
-                String traceId = segment.getTraceId().toString();
-                MDC.put("traceId", traceId);
-            });
+
 
             chain.doFilter(request, response);
         }

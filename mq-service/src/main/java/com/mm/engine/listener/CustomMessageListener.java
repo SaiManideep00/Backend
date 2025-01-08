@@ -3,6 +3,7 @@ package com.mm.engine.listener;
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import com.mm.engine.controller.MessageController;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
@@ -74,6 +75,7 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
     }
 
     public void processMessage(String content, String queueName, String providerName) throws Exception {
+
         String baseUrl = "http://delivery-service:9192/api/deliver";
         //WebClient webClient = WebClient.builder().build();
         ResponseEntity<String> response;
@@ -86,6 +88,7 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
 //            Gson gson = new Gson();
 //            String jsonBody = gson.toJson(content);
 //            System.out.println("Json Body: "+ jsonBody);
+            log.info("Trace id from message controller is "+MessageController.traceId);
             response = webClientBuilder.build().post()
                     .uri(uri)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -93,16 +96,16 @@ public class CustomMessageListener implements ChannelAwareMessageListener {
                     .header("eventName", queueName.split("\\.",-2)[2])
                     .header("consumerName", queueName.split("\\.",-2)[0])
                     .header("subscriptionType", queueName.split("\\.",-2)[1])
+                    .header("X-Amzn-Trace-Id",MessageController.traceId)
                     .body(BodyInserters.fromValue(content))
                     .retrieve().toEntity(String.class)
                     .block();
+            log.info("Response is "+response);
             Segment segment = AWSXRay.getCurrentSegmentOptional().orElse(null);
             String traceId=null;
             if(segment!=null)
                 traceId=segment.getTraceId().toString();
-            System.out.println("Trace ID sent is "+traceId);
-            System.out.println("Received from delivery "+response);
-
+            log.info("Current Trace ID is "+traceId);
             log.info("Delivery Successful : {}", response.getBody());
 
 //            System.out.println(response.getBody());

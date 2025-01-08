@@ -2,6 +2,8 @@ package com.messagingservice.deliveryservice.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.messagingservice.deliveryservice.service.DeliveryService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 @XRayEnabled
+@Slf4j
 public class DataFetcher {
     private final DeliveryService deliveryService;
 
@@ -27,5 +30,10 @@ public class DataFetcher {
 //        System.out.println(providerName);
 //        System.out.println((String) data.toString());
         return deliveryService.publishDataToMQ(providerName, eventName, data);
+    }
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        log.info("Trace ID from MDC: {}", MDC.get("traceId"));
+        return ResponseEntity.ok("Test endpoint");
     }
 }

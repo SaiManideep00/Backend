@@ -24,6 +24,7 @@ import java.util.UUID;
 
 @Component
 @Slf4j
+@Order(2)
 public class LoggingFilter implements Filter {
 
 

@@ -7,31 +7,31 @@
             <includeMdcKeyName>method</includeMdcKeyName>
             <includeMdcKeyName>path</includeMdcKeyName>
             <includeMdcKeyName>status</includeMdcKeyName>
-            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <includeMdcKeyName>AWS-XRAY-TRACE-ID</includeMdcKeyName>
         </encoder>
     </appender>
 
     <!-- File Appender -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>backend-service/logs/application.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+<!--    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>backend-service/logs/application.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
 
 
-            <fileNamePattern>backend-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"service":"backend-service"}</customFields>
-<!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
-            <includeMdcKeyName>method</includeMdcKeyName>
-            <includeMdcKeyName>path</includeMdcKeyName>
-            <includeMdcKeyName>traceId</includeMdcKeyName>
-        </encoder>
-    </appender>
+<!--            <fileNamePattern>backend-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+<!--            <customFields>{"service":"backend-service"}</customFields>-->
+<!--&lt;!&ndash;            <includeMdcKeyName>requestId</includeMdcKeyName>&ndash;&gt;-->
+<!--            <includeMdcKeyName>method</includeMdcKeyName>-->
+<!--            <includeMdcKeyName>path</includeMdcKeyName>-->
+<!--            <includeMdcKeyName>AWS-XRAY-TRACE-ID</includeMdcKeyName>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
+<!--        <appender-ref ref="FILE" />-->
     </root>
 </configuration>

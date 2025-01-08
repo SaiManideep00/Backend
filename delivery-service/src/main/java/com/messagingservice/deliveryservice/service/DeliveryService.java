@@ -69,7 +69,7 @@ public class DeliveryService {
         String url = subscribedEventConnections.getUrl();
         String username = subscribedEventConnections.getUsername();
         String password = subscribedEventConnections.getPassword();
-        System.out.println(obj.toString());
+
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             String sql = "INSERT INTO demodata VALUES (?,?)";
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -87,7 +87,8 @@ public class DeliveryService {
                 return ResponseEntity.ok().body("Delivered Successfully");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+
+            log.error(e.getMessage());
             ResponseEntity.badRequest().body(e.getMessage());
             //ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -144,14 +145,14 @@ public class DeliveryService {
         if(subscribedEvent.getSourceDataFormat().equalsIgnoreCase("json")){
             String jsonBody = gson.toJson(obj);
             log.info("JSON is "+jsonBody);
-            System.out.println(jsonBody);
+
             message = jsonParserService.jsonToMap(jsonBody);
         }
         else{
             try{
                 String xmlBody = xmlMapper.writeValueAsString(obj);
                 log.info("XML is "+xmlBody);
-                System.out.println(xmlBody);
+
                 message = xmlParserService.xmlToMap(xmlBody);
             } catch (JsonProcessingException e) {
                 log.error("JSon Processing Exception");
@@ -256,12 +257,9 @@ public class DeliveryService {
                     .retrieve().toEntity(String.class)
                     .block();
             log.info("published data to MQ "+response.getBody());
-            Segment segment =AWSXRay.getCurrentSegmentOptional().orElse(null);
-            String traceId=null;
-            if(segment!=null)
-                 traceId=segment.getTraceId().toString();
-            System.out.println("Trace ID sent is "+traceId);
-            System.out.println(response);
+
+
+
         } catch (URISyntaxException e) {
             log.error("Invalid URI");
             throw new RuntimeException(e);
