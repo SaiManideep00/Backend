@@ -6,27 +6,29 @@
             <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
             <includeMdcKeyName>method</includeMdcKeyName>
             <includeMdcKeyName>path</includeMdcKeyName>
+            <includeMdcKeyName>AWS-XRAY-TRACE-ID</includeMdcKeyName>
+            <includeMdc>true</includeMdc>
         </encoder>
     </appender>
 
-    <!-- File Appender: Writes JSON logs to a file -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>mq-service/logs/application.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>mq-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"service":"mq-service"}</customFields>
-            <!--            <includeMdcKeyName>requestId</includeMdcKeyName>-->
-            <includeMdcKeyName>method</includeMdcKeyName>
-            <includeMdcKeyName>path</includeMdcKeyName>
-        </encoder>
-    </appender>
+<!--    &lt;!&ndash; File Appender: Writes JSON logs to a file &ndash;&gt;-->
+<!--    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>mq-service/logs/application.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>mq-service/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+<!--            <customFields>{"service":"mq-service"}</customFields>-->
+<!--            &lt;!&ndash;            <includeMdcKeyName>requestId</includeMdcKeyName>&ndash;&gt;-->
+<!--            <includeMdcKeyName>method</includeMdcKeyName>-->
+<!--            <includeMdcKeyName>path</includeMdcKeyName>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
     <!-- Root Logger: Send logs to both console and file -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
-    </root>
+<!--        <appender-ref ref="FILE" />-->
+</root>
 </configuration>

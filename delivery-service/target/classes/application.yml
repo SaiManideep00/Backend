@@ -7,14 +7,14 @@ server:
 
 
 
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{36} - %msg%n"
-  level:
-    web: error
-    root: info
-    sql: error
-    org.springframework.security: trace
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{36} - %msg%n"
+#  level:
+#    web: error
+#    root: info
+#    sql: error
+#    org.springframework.security: trace
 
 
 
